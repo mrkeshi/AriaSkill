@@ -80,6 +80,25 @@ export const toJalaliWithTime = (value?: string | Date | null): string => {
   return `${toPersianNumerals(day)} ${monthName} ${toPersianNumerals(year)} — ${toPersianNumerals(hour)}:${toPersianNumerals(minute)}`
 }
 
+/**
+ * Returns a human-readable Persian relative time string.
+ * e.g. "لحظاتی پیش", "۵ دقیقه پیش", "۳ ساعت پیش", "دیروز", "۱۰ روز پیش"
+ */
+export const relativeTime = (value: string | Date | null | undefined): string => {
+  if (!value) return '-'
+  const date = value instanceof Date ? value : new Date(value)
+  if (isNaN(date.getTime())) return '-'
+  const diff  = Date.now() - date.getTime()
+  const mins  = Math.floor(diff / 60_000)
+  const hours = Math.floor(mins  / 60)
+  const days  = Math.floor(hours / 24)
+  if (mins  <  1) return 'لحظاتی پیش'
+  if (mins  < 60) return `${toPersianNumerals(mins)} دقیقه پیش`
+  if (hours < 24) return `${toPersianNumerals(hours)} ساعت پیش`
+  if (days  ===1) return 'دیروز'
+  return `${toPersianNumerals(days)} روز پیش`
+}
+
 export const getIranGreeting = (): string => {
   const iranTimeStr = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Tehran',

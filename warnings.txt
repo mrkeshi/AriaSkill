@@ -1,20 +1,39 @@
-Nuxt 4.0.0 with Nitro 2.12.0                                                                                                        nuxi 4:35:37 PM
-                                                                                                                                         4:35:38 PM
+operable program or batch file.
+ℹ Nuxt Icon server bundle mode is set to local                                                                                          5:42:27 PM
+✔ Nuxt Icon discovered local-installed 1 collections: mdi                                                                               5:42:29 PM
+✔ Vite client built in 46ms                                                                                                             5:42:31 PM
+✔ Vite server built in 73ms                                                                                                             5:42:31 PM
+✔ Nuxt Nitro server built in 857ms                                                                                                nitro 5:42:32 PM
+ℹ Vite client warmed up in 2ms                                                                                                          5:42:32 PM
+ℹ Vite server warmed up in 32ms                                                                                                         5:42:32 PM
+ℹ nuxt.config.ts updated. Restarting Nuxt...                                                                                            5:42:45 PM
+
+ ERROR  [unhandledRejection] read ECONNRESET                                                                                             5:42:45 PM
+
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+
+PS D:\AriaSkill\AriaSkill\FrontCode> npm run dev
+
+> dev
+> nuxt dev
+
+Nuxt 4.0.0 with Nitro 2.12.0                                                                                                        nuxi 5:42:48 PM
+                                                                                                                                         5:42:48 PM
   ➜ Local:    http://localhost:3000/
   ➜ Network:  use --host to expose
 
-  ➜ DevTools: press Shift + Alt + D in the browser (v2.6.2)                                                                              4:35:38 PM
+  ➜ DevTools: press Shift + Alt + D in the browser (v2.6.2)                                                                              5:42:49 PM
 
-                                                                              4:35:38 PM
+                                                                              5:42:49 PM
 operable program or batch file.
-ℹ Nuxt Icon server bundle mode is set to local                                                                                          4:35:39 PM
-✔ Nuxt Icon discovered local-installed 1 collections: mdi                                                                               4:35:41 PM
-✔ Vite client built in 42ms                                                                                                             4:35:42 PM
-✔ Vite server built in 78ms                                                                                                             4:35:42 PM
-✔ Nuxt Nitro server built in 1010ms                                                                                               nitro 4:35:43 PM
-ℹ Vite client warmed up in 3ms                                                                                                          4:35:43 PM
-ℹ Vite server warmed up in 61ms                                                                                                         4:35:43 PM
- WARN  [Vue warn]: Failed to resolve component: apexchart                                                                                4:36:05 PM
+ℹ Nuxt Icon server bundle mode is set to local                                                                                          5:42:49 PM
+✔ Nuxt Icon discovered local-installed 1 collections: mdi                                                                               5:42:51 PM
+✔ Vite client built in 34ms                                                                                                             5:42:52 PM
+✔ Vite server built in 62ms                                                                                                             5:42:52 PM
+✔ Nuxt Nitro server built in 759ms                                                                                                nitro 5:42:53 PM
+ℹ Vite client warmed up in 2ms                                                                                                          5:42:53 PM
+ℹ Vite server warmed up in 33ms                                                                                                         5:42:53 PM
+ WARN  [Vue warn]: Failed to resolve component: apexchart                                                                                5:43:44 PM
 If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
   at <DashboardDownloadChartVisitProject> 
   at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
@@ -38,7 +57,7 @@ If this is a native custom element, make sure to exclude it from component resol
   key: null,
   ref:
    { i:
-      { uid: 197,
+      { uid: 17,
         vnode: [Object],
         type: [Object],
         parent: [Object],
@@ -127,7 +146,7 @@ If this is a native custom element, make sure to exclude it from component resol
   appContext: null,
   ctx:
    <ref *1> {
-     uid: 197,
+     uid: 17,
      vnode:
       { __v_isVNode: true,
         __v_skip: true,
@@ -163,7 +182,7 @@ If this is a native custom element, make sure to exclude it from component resol
         compatConfig: [Object],
         setup: [Function: setup] },
      parent:
-      { uid: 196,
+      { uid: 16,
         vnode: [Object],
         type: [Object],
         parent: [Object],
@@ -233,7 +252,7 @@ If this is a native custom element, make sure to exclude it from component resol
         emitsCache: [WeakMap] },
      root:
       <ref *2> {
-        uid: 180,
+        uid: 0,
         vnode: [Object],
         type: [Object],
         parent: null,
@@ -447,4 +466,4 @@ If this is a native custom element, make sure to exclude it from component resol
   at <NuxtLayout> 
   at <App> 
   at <NuxtRoot>
-[4:36:05 PM]  WARN  [nuxt] Failed to stringify dev server logs. Received DevalueError: Cannot stringify a function. You can define your own reducer/reviver for rich types following the instructions in https://nuxt.com/docs/api/composables/use-nuxt-app#payload.
+[5:43:44 PM]  WARN  [nuxt] Failed to stringify dev server logs. Received DevalueError: Cannot stringify a function. You can define your own reducer/reviver for rich types following the instructions in https://nuxt.com/docs/api/composables/use-nuxt-app#payload.

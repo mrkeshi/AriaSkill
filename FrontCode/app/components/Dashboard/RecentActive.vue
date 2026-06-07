@@ -34,14 +34,14 @@
       >
         <div
           class="absolute right-0 top-3 bottom-3 w-[2.5px] rounded-l-full opacity-60 group-hover:opacity-100 transition-opacity"
-          :class="typeStyle(activity.type).line"
+          :class="activityStyle(activity.type).line"
         ></div>
 
         <div
           class="w-9 h-9 flex items-center justify-center rounded-lg border shrink-0 transition-all duration-500 group-hover:scale-105"
-          :class="typeStyle(activity.type).iconContainer"
+          :class="activityStyle(activity.type).iconContainer"
         >
-          <Icon :name="typeStyle(activity.type).icon" size="16" />
+          <Icon :name="activityStyle(activity.type).icon" size="16" />
         </div>
 
         <div class="flex flex-col justify-between flex-1 min-w-0 h-full gap-2 text-right">
@@ -52,9 +52,9 @@
               </h4>
               <span
                 class="text-[9px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap border"
-                :class="typeStyle(activity.type).badge"
+                :class="activityStyle(activity.type).badge"
               >
-                {{ typeStyle(activity.type).label }}
+                {{ activityStyle(activity.type).label }}
               </span>
               <span v-if="!activity.is_seen" class="w-1.5 h-1.5 rounded-full bg-classic-gold shrink-0"></span>
             </div>
@@ -110,11 +110,11 @@ import {
 } from '~/services/activity/activity.Service'
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { toJalaliWithTime } from '~/utilities/dateHelpers'
+import { activityStyle } from '~/utilities/activityHelpers'
+import { useDeleteModal } from '~/composable/useDeleteModal'
 
 const { showInfo } = useCustomToastify()
-
-const deleteModal = ref(false)
-const selectedId = ref<number | null>(null)
+const { deleteModal, selectedItem: selectedId, openDelete } = useDeleteModal<number>()
 const loadingId = ref<number | null>(null)
 
 const { data, pending, refresh } = await useAsyncData(
@@ -123,88 +123,6 @@ const { data, pending, refresh } = await useAsyncData(
 )
 
 const activities = computed<ActivityDTO[]>(() => data.value?.data ?? [])
-
-const typeStyle = (type: ActivityType) => {
-  const map: Record<ActivityType, { icon: string; label: string; iconContainer: string; badge: string; line: string }> = {
-    login_success: {
-      icon: 'mdi:login',
-      label: 'جلسه',
-      iconContainer: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.1)]',
-      badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/10',
-      line: 'bg-emerald-500',
-    },
-    login_failed: {
-      icon: 'mdi:shield-alert-outline',
-      label: 'امنیت',
-      iconContainer: 'border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.15)]',
-      badge: 'bg-rose-500/10 text-rose-400 border-rose-500/10',
-      line: 'bg-rose-500',
-    },
-    project_published: {
-      icon: 'mdi:cloud-upload',
-      label: 'پروژه',
-      iconContainer: 'border-cyan-500/20 bg-cyan-500/10 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.1)]',
-      badge: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/10',
-      line: 'bg-cyan-400',
-    },
-    project_created: {
-      icon: 'mdi:folder-plus-outline',
-      label: 'پروژه',
-      iconContainer: 'border-cyan-500/20 bg-cyan-500/10 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.1)]',
-      badge: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/10',
-      line: 'bg-cyan-400',
-    },
-    project_updated: {
-      icon: 'mdi:pencil-outline',
-      label: 'ویرایش',
-      iconContainer: 'border-blue-500/20 bg-blue-500/10 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.1)]',
-      badge: 'bg-blue-500/10 text-blue-400 border-blue-500/10',
-      line: 'bg-blue-400',
-    },
-    project_deleted: {
-      icon: 'mdi:folder-remove-outline',
-      label: 'حذف پروژه',
-      iconContainer: 'border-rose-500/20 bg-rose-500/10 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.1)]',
-      badge: 'bg-rose-500/10 text-rose-400 border-rose-500/10',
-      line: 'bg-rose-500',
-    },
-    password_changed: {
-      icon: 'mdi:lock-reset',
-      label: 'امنیت',
-      iconContainer: 'border-amber-500/20 bg-amber-500/10 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.1)]',
-      badge: 'bg-amber-500/10 text-amber-400 border-amber-500/10',
-      line: 'bg-amber-500',
-    },
-    project_documentation_downloaded: {
-      icon: 'mdi:file-download-outline',
-      label: 'دانلود',
-      iconContainer: 'border-purple-500/20 bg-purple-500/10 text-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.1)]',
-      badge: 'bg-purple-500/10 text-purple-400 border-purple-500/10',
-      line: 'bg-purple-500',
-    },
-    external_project_comment_created: {
-      icon: 'mdi:comment-arrow-left-outline',
-      label: 'دیدگاه',
-      iconContainer: 'border-indigo-500/20 bg-indigo-500/10 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.1)]',
-      badge: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/10',
-      line: 'bg-indigo-400',
-    },
-    comment_created: {
-      icon: 'mdi:comment-text-outline',
-      label: 'دیدگاه',
-      iconContainer: 'border-teal-500/20 bg-teal-500/10 text-teal-400 shadow-[0_0_12px_rgba(20,184,166,0.1)]',
-      badge: 'bg-teal-500/10 text-teal-400 border-teal-500/10',
-      line: 'bg-teal-400',
-    },
-  }
-  return map[type] ?? {
-    icon: 'mdi:information-outline',
-    label: 'عمومی',
-    iconContainer: 'border-white/10 bg-white/5 text-gray-400',
-    badge: 'bg-white/10 text-gray-400 border-white/10',
-    line: 'bg-gray-500',
-  }
-}
 
 const handleMarkSeen = async (activity: ActivityDTO) => {
   loadingId.value = activity.id
@@ -215,11 +133,6 @@ const handleMarkSeen = async (activity: ActivityDTO) => {
   } finally {
     loadingId.value = null
   }
-}
-
-const openDelete = (id: number) => {
-  selectedId.value = id
-  deleteModal.value = true
 }
 
 const handleDelete = async () => {

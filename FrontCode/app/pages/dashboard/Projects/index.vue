@@ -43,7 +43,7 @@
         <tr v-for="(item, index) in projects" :key="item.id" class="hover:bg-white/[0.05] transition-all duration-300 group">
           
 
-          <td class="p-4 text-center text-gray-500  text-xs">{{ toPersianNumerals(rowNumber(index)) }}</td>
+          <td class="p-4 text-center text-gray-500  text-xs">{{ toPersianNumerals(rowNumber(index, currentPage.value, 6)) }}</td>
 
           <td class="p-4">
             <div class="font-semibold text-white group-hover:text-classic-gold transition-colors duration-200">
@@ -141,13 +141,15 @@ import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
 import { generateSeoMeta } from '~/utilities/seo'
 import { toJalali, toPersianNumerals } from '~/utilities/dateHelpers'
+import { rowNumber } from '~/utilities/stringHelpers'
+import { useCurrentPage } from '~/composable/useCurrentPage'
+import { useDeleteModal } from '~/composable/useDeleteModal'
 
 definePageMeta({ layout: 'dashboard' })
 
 const route = useRoute()
-const currentPage = computed(() => Number(route.query.page) || 1)
-const deleteModal = ref(false)
-const selectedSlug = ref('')
+const { currentPage } = useCurrentPage()
+const { deleteModal, selectedItem: selectedSlug, openDelete } = useDeleteModal<string>()
 const { showInfo } = useCustomToastify()
 
 const { data, refresh, pending } = await useAsyncData(
@@ -160,18 +162,11 @@ const projects = computed(() => data.value?.data?.results ?? [])
 const totalCount = computed(() => data.value?.data?.count ?? 0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 6))
 
-const rowNumber = (index: number) => ((currentPage.value - 1) * 6) + index + 1
-
-const openDelete = (slug: string) => {
-  selectedSlug.value = slug
-  deleteModal.value = true
-}
-
 const deleteSelectedProject = async () => {
   if (!selectedSlug.value) return
   await deleteProjectService(selectedSlug.value)
   showInfo({ title: 'پروژه حذف شد', message: 'پروژه با موفقیت حذف شد.' })
-  selectedSlug.value = ''
+  selectedSlug.value = null
   await refresh()
 }
 

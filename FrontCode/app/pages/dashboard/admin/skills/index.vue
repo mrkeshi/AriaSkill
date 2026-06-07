@@ -1,10 +1,10 @@
 <template>
   <UiCardBlury>
  <Confirm
-      v-model="isdel"
+      v-model="deleteModal"
       title="حذف مهارت"
       description="آیا برای حذف این آیتم مطمئن هستید؟"
-      @confirm="deleteItem"
+      @confirm="confirmDelete"
     />
 
     <div class="transition-all">
@@ -62,7 +62,7 @@
 >
   <Icon name="mdi:pencil-outline" class="text-lg" />
 </NuxtLink>
-                  <button @click="delid=item.id;isdel=true" class="bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 p-2 rounded-lg text-rose-400 transition"><Icon name="mdi:trash-can-outline" class="text-lg mt-1"/></button>
+                  <button @click="openDelete(item.id)" class="bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 p-2 rounded-lg text-rose-400 transition"><Icon name="mdi:trash-can-outline" class="text-lg mt-1"/></button>
                 </div>
               </td>
             </tr>
@@ -84,39 +84,33 @@
   </UiCardBlury>
 </template>
 
-<script setup>
-import { useCustomToastify } from '~/composable/useCustomToasitify';
-import { deleteSkillsService, getSkillsService } from '~/services/skills/skills.Service';
+<script setup lang="ts">
+import type { skillItem } from '~/models/Skill/SkillDTO'
+import { useCustomToastify } from '~/composable/useCustomToasitify'
+import { deleteSkillsService, getSkillsService } from '~/services/skills/skills.Service'
+import { useCurrentPage } from '~/composable/useCurrentPage'
+import { useDeleteModal } from '~/composable/useDeleteModal'
 
 definePageMeta({ layout: 'dashboard' })
-useHead({ title: 'لیست مهارت‌ها' });
+useHead({ title: 'لیست مهارت‌ها' })
 
-const isdel=ref(false)
-const delid=ref(0)
-const route = useRoute();
+const { showInfo } = useCustomToastify()
+const { currentPage } = useCurrentPage()
+const { deleteModal, selectedItem: selectedId, openDelete } = useDeleteModal<number>()
 
-const currentPage = computed(() => Number(route.query.page) || 1);
-
-
-const { data,refresh, pending } = await useAsyncData(
-  "skills-list",
+const { data, refresh, pending } = await useAsyncData(
+  'skills-list',
   () => getSkillsService(currentPage.value),
-  {
-    watch: [currentPage] 
-  }
-);
+  { watch: [currentPage] },
+)
 
-const skills = computed(() => data.value?.data?.results || []);
+const skills = computed<skillItem[]>(() => data.value?.data?.results || [])
+const totalPages = computed(() => Math.ceil((data.value?.data?.count || 0) / 10))
 
-const totalPages = computed(() => {
-  const count = data.value?.data?.count || 0;
-  return Math.ceil(count / 10); 
-});
-const {showInfo}=useCustomToastify()
-const deleteItem=async()=>{
-  await deleteSkillsService(delid.value).then((_)=>{
-    showInfo({title:'حذف مهارت',message:'مهارت با موفقیت حذف شد.'})
-    refresh()
-  })
+const confirmDelete = async () => {
+  if (!selectedId.value) return
+  await deleteSkillsService(selectedId.value)
+  showInfo({ title: 'حذف مهارت', message: 'مهارت با موفقیت حذف شد.' })
+  await refresh()
 }
 </script>

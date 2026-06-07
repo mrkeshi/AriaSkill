@@ -195,6 +195,7 @@ import {
   getNotificationsService,
   getUnreadNotificationCountService,
 } from '~/services/notification/notification.Service'
+import { toPersianNumerals, relativeTime } from '~/utilities/dateHelpers'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -254,13 +255,9 @@ const sendBroadcast = async () => {
   }
 }
 
-// ─── Stats ─────────────────────────────────────────────────────────────────
+// ─── History (broadcast type only) ────────────────────────────────────────
 const broadcastsSent = ref(0)
 const totalUnread    = ref(0)
-
-const toPersianNumerals = (n) => Number(n).toLocaleString('fa-IR')
-
-// ─── History (broadcast type only) ────────────────────────────────────────
 const broadcastHistory    = ref([])
 const historyLoading      = ref(true)
 const historyPage         = ref(1)
@@ -281,19 +278,6 @@ const fetchHistory = async () => {
   } finally {
     historyLoading.value = false
   }
-}
-
-// ─── Time helper ───────────────────────────────────────────────────────────
-const relativeTime = (iso) => {
-  const diff  = Date.now() - new Date(iso).getTime()
-  const mins  = Math.floor(diff / 60000)
-  const hours = Math.floor(mins / 60)
-  const days  = Math.floor(hours / 24)
-  if (mins < 1)   return 'لحظاتی پیش'
-  if (mins < 60)  return `${mins} دقیقه پیش`
-  if (hours < 24) return `${hours} ساعت پیش`
-  if (days === 1) return 'دیروز'
-  return `${days} روز پیش`
 }
 
 watch(historyPage, fetchHistory)

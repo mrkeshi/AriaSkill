@@ -60,24 +60,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { getDashboardStatsService } from '~/services/notification/notification.Service'
-
-// ── Persian numeral helper ─────────────────────────────────────────────────
-const toPersianNumerals = (n: number) =>
-  n.toLocaleString('fa-IR')
+import { toPersianNumerals } from '~/utilities/dateHelpers'
+import type { StatCard } from '~/models/Dashboard/dashboardTypes'
 
 // ── Reactive state ─────────────────────────────────────────────────────────
 const loading = ref(true)
-
-interface StatCard {
-  id: number
-  label: string
-  value: number
-  icon: string
-  iconStyle: string
-  shadowColor: string
-  bgGlow: string
-  lineStyle: string
-}
 
 const stats = ref<StatCard[]>([
   {

@@ -225,6 +225,10 @@ import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { changeAdminUserPasswordService, deleteAdminUserService, getAdminUsersService, updateAdminUserStatusService } from '~/services/user/user.Service'
 import { toJalali, toPersianNumerals } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
+import { firstLetter } from '~/utilities/stringHelpers'
+import { useAdminSearch } from '~/composable/useAdminSearch'
+import { useDeleteModal } from '~/composable/useDeleteModal'
+import { useCurrentPage } from '~/composable/useCurrentPage'
 
 definePageMeta({ layout: 'dashboard' })
 useHead({ title: 'مدیریت کاربران' })
@@ -234,10 +238,7 @@ const auth = useAuthStore()
 const { showInfo } = useCustomToastify()
 
 const pageSize = 8
-const deleteModal = ref(false)
 const passwordModal = ref(false)
-const selectedUser = ref<AdminUserDTO | null>(null)
-const searchInput = ref(String(route.query.search || ''))
 const statusLoadingId = ref<number | null>(null)
 const passwordLoading = ref(false)
 const passwordForm = reactive({
@@ -245,8 +246,9 @@ const passwordForm = reactive({
   password_confirm: '',
 })
 
-const currentPage = computed(() => Number(route.query.page) || 1)
-const searchQuery = computed(() => String(route.query.search || '').trim())
+const { searchInput, searchQuery, submitSearch, clearSearch } = useAdminSearch()
+const { currentPage } = useCurrentPage()
+const { deleteModal, selectedItem: selectedUser, openDelete: openDeleteModal } = useDeleteModal<AdminUserDTO>()
 
 const { data, refresh, pending } = await useAsyncData(
   'admin-users-list',
@@ -264,10 +266,6 @@ const deleteDescription = computed(() => {
   return `آیا برای حذف ${name} مطمئن هستید؟`
 })
 
-watch(searchQuery, (value) => {
-  searchInput.value = value
-})
-
 const displayName = (user: AdminUserDTO) => {
   const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim()
   return fullName || user.username || user.email
@@ -280,32 +278,6 @@ const roleLabel = (user: AdminUserDTO) => {
 }
 
 const isCurrentUser = (user: AdminUserDTO) => user.email === auth.user.email
-
-const submitSearch = async () => {
-  await navigateTo({
-    query: {
-      ...route.query,
-      page: undefined,
-      search: searchInput.value.trim() || undefined,
-    },
-  })
-}
-
-const clearSearch = async () => {
-  searchInput.value = ''
-  await navigateTo({
-    query: {
-      ...route.query,
-      page: undefined,
-      search: undefined,
-    },
-  })
-}
-
-const openDeleteModal = (user: AdminUserDTO) => {
-  selectedUser.value = user
-  deleteModal.value = true
-}
 
 const deleteUser = async () => {
   if (!selectedUser.value) return
