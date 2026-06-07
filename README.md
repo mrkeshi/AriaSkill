@@ -28,7 +28,7 @@ A full-stack project showcase platform where developers can publish, share, and 
 | Layer      | Technology                                                                              |
 |------------|-----------------------------------------------------------------------------------------|
 | Backend    | Python · Django 5 · Django REST Framework · SimpleJWT · drf-spectacular                |
-| Frontend   | Nuxt 3 · Vue 3 · TypeScript · Pinia · ApexCharts · Tailwind CSS                        |
+| Frontend   | Nuxt 4 · Vue 3 · TypeScript · Pinia · ApexCharts · Tailwind CSS                        |
 | Auth       | JWT (access + refresh tokens) · Google OAuth                                            |
 | Database   | SQLite (development) — swappable to PostgreSQL for production                           |
 | Task Queue | Celery · Redis (async email delivery, background jobs)                                  |
@@ -277,7 +277,7 @@ FrontCode/app/
 
 ### Key Features
 
-- **File-based routing** via Nuxt 3 pages directory ...
+- **File-based routing** via Nuxt 4 pages directory ...
 - **Pinia auth store** — manages access/refresh tokens in cookies; handles silent token refresh on 401 ...
 - **`FetchX` utility** — wraps Nuxt's `$fetch` with automatic `Authorization: JWT ...` header injection and transparent refresh on expiry ...
 - **ApexCharts** — interactive download & view chart on the dashboard (`DownloadChartVisitProject.vue`) ...
@@ -455,7 +455,7 @@ source venv/bin/activate
 celery -A config worker --loglevel=info
 ```
 
-**Terminal 4 — Nuxt Frontend**
+**Terminal 4 — t Frontend**
 ```bash
 cd FrontCode
 npm run dev
