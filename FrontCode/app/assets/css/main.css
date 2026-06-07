@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+
+@font-face {
+    font-family: 'Mahoor';
+    src: url('../fonts/Mahoor-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Pelak';
+    src: url('../fonts/Pelak-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+
+
+body {
+    font-family: 'pelak', sans-serif;
+    background-color: #121212;
+    direction: rtl;
+    color: #F5F5F5 ;
+    position: relative;
+}
+
+@theme {
+
+    /* Primary Color */
+    --color-deep-black: #0A0A0C; 
+    --color-carb-gray:  #161618; 
+    --color-slate-dark: #22222E; 
+
+    --color-bone-white: #F5F5F5;
+    --color-text-muted: #94A3B8; 
+    --color-dark-gray:  #475569;
+
+    --color-classic-gold: #D4AF37;
+    --color-light-gold:   #F3D55B;
+    --color-bronze:       #C5832B;
+    --color-kohl:         #0F1115;
+
+    --color-success: #10B981; 
+    --color-error:   #F43F5E; 
+    --color-warning: #E2B93B; 
+
+    --font-pelak: 'pelak';
+    --font-bidad: 'bidad';
+    --font-bidad: 'aria';
+
+}
+.neon-background{
+    position: absolute;
+    inset: 0;
+    z-index: -100;
+    overflow: hidden;
+    background: #0A0A0C;
+}
+
+.neon-layer{
+    position: absolute;
+    width: 28vw;
+    height: 28vw;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .55;
+    animation: float 20s infinite ease-in-out;
+    z-index: -20;
+}
+
+.neon-layer:nth-child(1){
+  z-index: -2000;
+    background: radial-gradient(circle,#D4AF37 0%, transparent 60%);
+    top: 15%;
+    left: 15%;
+}
+
+.neon-layer:nth-child(2){
+    background: radial-gradient(circle,#c59c2b 0%, transparent 50%);
+    bottom: 25%;
+    left: 70%;
+
+    animation-duration: 24s;
+
+}
+
+
+
+@keyframes float{
+
+    0%{
+        transform: translate(0,0) scale(1);
+    }
+
+    50%{
+        transform: translate(-60px,40px) scale(1.15);
+    }
+
+    100%{
+        transform: translate(60px,-30px) scale(1);
+    }
+
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.slide-up-enter-active {
+  transition: all 0.4s ease;
+}
+
+.slide-up-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-up-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-up-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+
+.text-shine{
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.text-shine::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.9),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+  animation: textFlash 6s infinite;
+}
+
+@keyframes textFlash{
+  0%{
+    left: -120%;
+  }
+  40%{
+    left: 140%;
+  }
+  100%{
+    left: 140%;
+  }
+}
+
+
+.custom-toast {
+  direction: rtl;
+  background: var(--color-carb-gray) !important; 
+  
+  border-radius: 10px !important;
+  padding: 12px 14px;
+  border: 1px solid var(--color-deep-black);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  color: var(--color-bone-white) !important;
+  font-family: var(--font-bidad), var(--font-pelak), sans-serif !important;
+}
+
+.custom-toast-body {
+  font-size: 15px;
+  line-height: 25px;
+  text-align: right;
+ font-family: 'pelak';
+
+  color: var(--color-bone-white);
+}
+
+.custom-toast .toastify__icon {
+  color: var(--color-classic-gold) !important;
+}
+
+
+
+.custom-toast .toastify__progress-bar {
+  background: var(--color-classic-gold) !important;
+}
+
+.Toastify__toast--error.custom-toast {
+  border-right: 4px solid var(--color-error) !important;
+}
+
+.Toastify__toast--success.custom-toast {
+  border-right: 4px solid var(--color-success)}
+
+.Toastify__toast--info.custom-toast {
+  border-right: 4px solid var(--color-blue-500) !important;
+}

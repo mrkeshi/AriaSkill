@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ابزار پردازش متن فارسی</title>
+    <style>
+        body {
+            font-family: 'Pelak', Tahoma, Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            font-family: 'Pelak', Tahoma, Arial, sans-serif;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+        input[type="text"] {
+            width: 100%;
+            font-family: 'Pelak', Tahoma, Arial, sans-serif;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #eef;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn-group { margin-bottom: 20px; }
+        button {
+            font-family: 'Pelak', Tahoma, Arial, sans-serif;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            margin-left: 5px;
+            margin-bottom: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        button.secondary { background-color: #6c757d; }
+        button.secondary:hover { background-color: #5a6268; }
+
+        /* باکس شناور ترجمه (سمت چپ) */
+        .floating-left {
+            position: fixed;
+            left: 20px;
+            top: 50px;
+            width: 250px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .floating-left textarea { height: 100px; font-size: 14px; }
+
+        /* باکس شناور شمارنده (سمت راست) */
+        .floating-right {
+            position: fixed;
+            right: 20px;
+            top: 50px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+        .counter-number {
+            display: block;
+            font-size: 24px;
+            color: #d9534f;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- باکس شناور شمارنده سمت راست -->
+<div class="floating-right">
+    تعداد تبدیل (Reshape):
+    <span class="counter-number" id="counterValue">0</span>
+</div>
+
+<!-- باکس شناور ترجمه سمت چپ -->
+<div class="floating-left">
+    <label><strong>ترجمه به فارسی:</strong></label>
+    <textarea id="translateInput" placeholder="متن انگلیسی یا زبان دیگر را اینجا وارد کنید..." dir="ltr"></textarea>
+    <button id="translateBtn" onclick="translateText()" style="width: 100%; margin-left: 0;">ترجمه و افزودن به باکس اصلی</button>
+</div>
+
+<div class="container">
+    <h2>ابزار پردازش متن</h2>
+
+    <label for="reshapedText"><strong>متن پردازش‌شده (Reshaped) - برای کپی در نرم‌افزار مقصد:</strong></label>
+    <!-- رویدادهای ماوس و کیبورد برای تشخیص متن انتخاب شده -->
+    <textarea id="reshapedText" onmouseup="handleSelection()" onkeyup="handleSelection()"></textarea>
+
+    <div class="btn-group">
+        <button onclick="insertNewLine()">درج \n در مکان‌نما</button>
+        <button onclick="reverseLinesOrder()" class="secondary">معکوس کردن ترتیب خطوط</button>
+    </div>
+
+    <!-- باکس وسط برای نمایش سالم متن انتخاب شده -->
+    <label for="selectedEquivalent"><strong>معادل متن انتخاب‌شده از کادر بالا:</strong></label>
+    <input type="text" id="selectedEquivalent" readonly placeholder="بخشی از متن بالا را انتخاب کنید تا اینجا سالم نمایش داده شود...">
+
+    <label for="normalText"><strong>متن اصلی (فارسی استاندارد):</strong></label>
+    <textarea id="normalText"></textarea>
+
+    <div class="btn-group">
+        <button onclick="reshapeText()">تبدیل (Reshape) و کپی خودکار</button>
+        <button onclick="unreshapeText()" class="secondary">برگرداندن به حالت عادی (Unreshape)</button>
+    </div>
+</div>
+
+<script>
+    let reshapeCount = 0; // متغیر شمارنده
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // ارسال به API ریشیپ
+    function reshapeText() {
+        const text = document.getElementById('normalText').value;
+        fetch('/api/reshape/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ text: text })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.reshaped_text) {
+                document.getElementById('reshapedText').value = data.reshaped_text;
+
+                // افزایش شمارنده و آپدیت UI
+                reshapeCount++;
+                document.getElementById('counterValue').innerText = reshapeCount;
+
+                // کپی خودکار
+                navigator.clipboard.writeText(data.reshaped_text).then(() => {
+                    // یک پیام کوچک به جای alert آزاردهنده
+                    console.log("متن در کلیپ‌بورد کپی شد.");
+                }).catch(err => {
+                    console.error('خطا در کپی خودکار: ', err);
+                });
+            } else {
+                alert("خطا: " + data.error);
+            }
+        });
+    }
+
+    // بازگردانی کل متن به حالت عادی
+    function unreshapeText() {
+        const text = document.getElementById('reshapedText').value;
+        fetch('/api/unreshape/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ text: text })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.unreshaped_text) {
+                document.getElementById('normalText').value = data.unreshaped_text;
+            }
+        });
+    }
+
+    // نمایش متن انتخاب شده به صورت سالم در باکس وسط
+    function handleSelection() {
+        const reshapedTextarea = document.getElementById('reshapedText');
+        const selectedText = reshapedTextarea.value.substring(
+            reshapedTextarea.selectionStart,
+            reshapedTextarea.selectionEnd
+        );
+
+        if (selectedText.trim().length > 0) {
+            fetch('/api/unreshape/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ text: selectedText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.unreshaped_text) {
+                    document.getElementById('selectedEquivalent').value = data.unreshaped_text;
+                }
+            });
+        } else {
+            document.getElementById('selectedEquivalent').value = "";
+        }
+    }
+
+    // درج کاراکتر \n در محل مکان‌نما
+    function insertNewLine() {
+        const textarea = document.getElementById('reshapedText');
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+        const text = textarea.value;
+
+        const textToInsert = "\\n";
+        textarea.value = text.substring(0, startPos) + textToInsert + text.substring(endPos, text.length);
+
+        textarea.focus();
+        textarea.selectionStart = startPos + textToInsert.length;
+        textarea.selectionEnd = startPos + textToInsert.length;
+    }
+
+    // معکوس کردن ترتیب خطوط
+    function reverseLinesOrder() {
+        const textarea = document.getElementById('reshapedText');
+        let lines = textarea.value.split("\\n");
+        lines.reverse();
+        textarea.value = lines.join("\\n");
+    }
+
+    // ارسال متن برای ترجمه و افزودن به باکس اصلی
+    function translateText() {
+        const sourceText = document.getElementById('translateInput').value;
+        const btn = document.getElementById('translateBtn');
+        if (!sourceText.trim()) return;
+
+        btn.innerText = 'در حال ترجمه...';
+        btn.disabled = true;
+
+        fetch('/api/translate/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ text: sourceText })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.innerText = 'ترجمه و افزودن به باکس اصلی';
+            btn.disabled = false;
+
+            if (data.translated_text) {
+                const normalTextarea = document.getElementById('normalText');
+                // اگر از قبل متنی بود، به خط بعد برو و متن جدید را اضافه کن
+                const currentVal = normalTextarea.value.trim();
+                if (currentVal.length > 0) {
+                    normalTextarea.value = currentVal + '\n' + data.translated_text;
+                } else {
+                    normalTextarea.value = data.translated_text;
+                }
+            } else if (data.error) {
+                alert("خطا در ترجمه: " + data.error);
+            }
+        })
+        .catch(err => {
+            btn.innerText = 'ترجمه و افزودن به باکس اصلی';
+            btn.disabled = false;
+            console.error('Translate error:', err);
+        });
+    }
+</script>
+
+</body>
+</html>

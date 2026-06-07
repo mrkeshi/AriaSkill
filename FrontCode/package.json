@@ -1,0 +1,40 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@iconify-json/mdi": "^1.2.3",
+    "@nuxt/icon": "^2.2.1",
+    "@pinia/nuxt": "^0.11.2",
+    "@tailwindcss/vite": "^4.1.11",
+    "apexcharts": "^5.10.6",
+    "nuxt": "^4.0.0",
+    "nuxt-schema-org": "^5.0.6",
+    "nuxt-toast": "^1.1.4",
+    "nuxt-toastify": "^1.1.0",
+    "ohmyfetch": "^0.4.21",
+    "pinia": "^3.0.4",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.5",
+    "tailwindcss": "^4.1.11",
+    "vee-validate": "^4.15.1",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1",
+    "vue3-apexcharts": "^1.11.1",
+    "yup": "^1.7.1"
+  },
+  "devDependencies": {
+    "@vite-pwa/nuxt": "^1.0.4",
+    "nuxt-icon": "^1.0.0-beta.7",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-icons": "^23.0.1",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}
