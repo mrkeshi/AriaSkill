@@ -167,6 +167,14 @@ class ActivityService:
     def project_documentation_downloaded(user, project, request=None) -> Activity | None:
         meta = request_metadata(request)
         meta['project_slug'] = project.slug
+
+        from activity.models import ProjectDownloadLog
+        ProjectDownloadLog.objects.create(
+            project=project,
+            downloader=user if getattr(user, 'is_authenticated', False) else None,
+            ip_address=meta.get('ip_address'),
+        )
+
         return ActivityService.create(
             user=user,
             type=ActivityType.PROJECT_DOCUMENTATION_DOWNLOADED,
@@ -200,26 +208,3 @@ class ActivityService:
             related_user=related_user,
             metadata={'comment_id': comment.id, 'project_slug': project.slug},
         )
-
-
-@staticmethod
-def project_documentation_downloaded(user, project, request=None) -> Activity | None:
-    meta = request_metadata(request)
-    meta['project_slug'] = project.slug
-
-    from activity.models import ProjectDownloadLog
-    ProjectDownloadLog.objects.create(
-        project=project,
-        downloader=user if getattr(user, 'is_authenticated', False) else None,
-        ip_address=meta.get('ip_address'),
-    )
-
-
-    return ActivityService.create(
-        user=user,
-        type=ActivityType.PROJECT_DOCUMENTATION_DOWNLOADED,
-        title='دانلود مستندات پروژه',
-        description=f'فایل پروژه «{project.title}» دانلود شد.',
-        related_project=project,
-        metadata=meta,
-    )

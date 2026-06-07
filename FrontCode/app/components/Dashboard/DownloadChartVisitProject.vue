@@ -180,7 +180,7 @@ const chartOptions = computed(() => ({
   legend: { show: false },
   tooltip: {
     theme: 'dark',
-    custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
+    custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
       const day   = w.globals.categoryLabels[dataPointIndex]
       const views = toPersianNumerals(series[0][dataPointIndex])
       const downloads = toPersianNumerals(series[1][dataPointIndex])

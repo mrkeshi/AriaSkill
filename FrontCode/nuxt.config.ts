@@ -6,7 +6,11 @@ import Icons from 'unplugin-icons/vite'
    devtools: { enabled: true },
    css: ["@/assets/css/main.css"],
 
-  
+   vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag === 'apexchart',
+    },
+    },
    runtimeConfig: {
      privateHeaderKey: process.env.NUXT_PRIVATE_HEADER_KEY || '',
      public: {
