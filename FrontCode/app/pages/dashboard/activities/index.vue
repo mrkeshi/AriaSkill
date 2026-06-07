@@ -78,18 +78,18 @@
         >
           <div
             class="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl border"
-            :class="typeStyle(activity.type).iconContainer"
+            :class="activityStyle(activity.type).iconContainer"
           >
-            <Icon :name="typeStyle(activity.type).icon" class="text-lg" />
+            <Icon :name="activityStyle(activity.type).icon" class="text-lg" />
           </div>
 
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-0.5 flex-wrap">
               <span
                 class="text-[10px] px-2 py-0.5 rounded-full font-bold whitespace-nowrap border"
-                :class="typeStyle(activity.type).badge"
+                :class="activityStyle(activity.type).badge"
               >
-                {{ typeStyle(activity.type).label }}
+                {{ activityStyle(activity.type).label }}
               </span>
               <h3 class="text-sm text-gray-100 font-semibold truncate">{{ activity.title }}</h3>
               <span v-if="!activity.is_seen" class="w-2 h-2 rounded-full bg-classic-gold shrink-0"></span>
@@ -152,14 +152,17 @@ import {
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { generateSeoMeta } from '~/utilities/seo'
 import { toPersianNumerals, toJalaliWithTime } from '~/utilities/dateHelpers'
+import { activityStyle } from '~/utilities/activityHelpers'
+import { useDeleteModal } from '~/composable/useDeleteModal'
+import { useCurrentPage } from '~/composable/useCurrentPage'
 
 definePageMeta({ layout: 'dashboard' })
 
 const route = useRoute()
 const router = useRouter()
 const { showInfo } = useCustomToastify()
-
-const currentPage = computed(() => Number(route.query.page) || 1)
+const { currentPage } = useCurrentPage()
+const { deleteModal, selectedItem: selectedId, openDelete } = useDeleteModal<number>()
 
 type SeenKey = 'all' | 'unseen' | 'seen'
 
@@ -173,8 +176,6 @@ const activeSeenKey = ref<SeenKey>('all')
 const activeSeenValue = computed(() => seenTabs.find(t => t.key === activeSeenKey.value)?.value)
 
 const activeType = ref<ActivityType | ''>('')
-const deleteModal = ref(false)
-const selectedId = ref<number | null>(null)
 const loadingId = ref<number | null>(null)
 const markAllLoading = ref(false)
 
@@ -218,77 +219,6 @@ const rowClass = (isSeen: boolean) => {
     : 'bg-gradient-to-r from-white/[0.06] to-white/[0.03] border-white/10 hover:border-white/20 shadow-md'
 }
 
-const typeStyle = (type: ActivityType) => {
-  const map: Record<ActivityType, { icon: string; label: string; iconContainer: string; badge: string }> = {
-    login_success: {
-      icon: 'mdi:login',
-      label: 'ورود موفق',
-      iconContainer: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-400',
-      badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    },
-    login_failed: {
-      icon: 'mdi:shield-alert-outline',
-      label: 'ورود ناموفق',
-      iconContainer: 'border-rose-500/30 bg-rose-500/10 text-rose-400',
-      badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    },
-    project_published: {
-      icon: 'mdi:cloud-upload',
-      label: 'انتشار پروژه',
-      iconContainer: 'border-cyan-500/20 bg-cyan-500/10 text-cyan-400',
-      badge: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    },
-    project_created: {
-      icon: 'mdi:folder-plus-outline',
-      label: 'ایجاد پروژه',
-      iconContainer: 'border-cyan-500/20 bg-cyan-500/10 text-cyan-400',
-      badge: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    },
-    project_updated: {
-      icon: 'mdi:pencil-outline',
-      label: 'ویرایش پروژه',
-      iconContainer: 'border-blue-500/20 bg-blue-500/10 text-blue-400',
-      badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    },
-    project_deleted: {
-      icon: 'mdi:folder-remove-outline',
-      label: 'حذف پروژه',
-      iconContainer: 'border-rose-500/20 bg-rose-500/10 text-rose-400',
-      badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    },
-    password_changed: {
-      icon: 'mdi:lock-reset',
-      label: 'تغییر رمز',
-      iconContainer: 'border-amber-500/20 bg-amber-500/10 text-amber-400',
-      badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    },
-    project_documentation_downloaded: {
-      icon: 'mdi:file-download-outline',
-      label: 'دانلود مستندات',
-      iconContainer: 'border-purple-500/20 bg-purple-500/10 text-purple-400',
-      badge: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-    },
-    external_project_comment_created: {
-      icon: 'mdi:comment-arrow-left-outline',
-      label: 'دیدگاه در پروژه دیگران',
-      iconContainer: 'border-indigo-500/20 bg-indigo-500/10 text-indigo-400',
-      badge: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-    },
-    comment_created: {
-      icon: 'mdi:comment-text-outline',
-      label: 'ثبت دیدگاه',
-      iconContainer: 'border-teal-500/20 bg-teal-500/10 text-teal-400',
-      badge: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
-    },
-  }
-  return map[type] ?? {
-    icon: 'mdi:information-outline',
-    label: 'عمومی',
-    iconContainer: 'border-white/10 bg-white/5 text-gray-400',
-    badge: 'bg-white/10 text-gray-400 border-white/10',
-  }
-}
-
 const setSeenTab = (tab: typeof seenTabs[number]) => {
   activeSeenKey.value = tab.key
   resetPage()
@@ -307,11 +237,6 @@ const handleMarkSeen = async (activity: ActivityDTO) => {
   } finally {
     loadingId.value = null
   }
-}
-
-const openDelete = (id: number) => {
-  selectedId.value = id
-  deleteModal.value = true
 }
 
 const handleDelete = async () => {

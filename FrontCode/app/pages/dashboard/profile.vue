@@ -203,6 +203,7 @@ import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { useAuthStore } from '~/stores/authStore'
 import { generateSeoMeta } from '~/utilities/seo'
 import { normalizeSocialLinks, resolveMediaUrl } from '~/utilities/urlHelpers'
+import { userInitialFrom } from '~/utilities/stringHelpers'
 
 const loading = ref(false)
 const pageLoading = ref(false)
@@ -223,10 +224,7 @@ const form = reactive<EditUserDTO>({
   discord_link: ''
 })
 
-const userInitial = computed(() => {
-  const name = form.first_name.trim() || form.username.trim()
-  return name ? name.charAt(0) : 'U'
-})
+const userInitial = computed(() => userInitialFrom(form))
 
 let objectUrl: string | null = null
 const { showSuccess } = useCustomToastify()

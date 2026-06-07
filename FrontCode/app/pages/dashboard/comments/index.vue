@@ -73,7 +73,7 @@
               class="hover:bg-white/[0.05] transition-all duration-300 group"
               :class="{ 'opacity-50': item.status === 'inactive' }"
             >
-              <td class="p-4 text-center text-gray-500 font-mono text-xs">{{ toPersianNumerals(rowNumber(index)) }}</td>
+              <td class="p-4 text-center text-gray-500 font-mono text-xs">{{ toPersianNumerals(rowNumber(index, currentPage.value, 10)) }}</td>
 
               <td class="p-4">
                 <div class="flex items-center gap-3">
@@ -87,7 +87,7 @@
                     v-else
                     class="w-10 h-10 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 flex items-center justify-center font-bold text-base shadow-lg"
                   >
-                    {{ getFirstLetter(item.user_name) }}
+                    {{ firstLetter(item.user_name) }}
                   </div>
                   <div class="flex flex-col">
                     <span class="font-medium text-white">{{ item.user_name }}</span>
@@ -162,6 +162,8 @@ import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { generateSeoMeta } from '~/utilities/seo'
 import { toJalaliLong, toPersianNumerals } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
+import { firstLetter, rowNumber } from '~/utilities/stringHelpers'
+import { useCurrentPage } from '~/composable/useCurrentPage'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -170,7 +172,7 @@ const ReplySchema = object({
 })
 
 const route = useRoute()
-const currentPage = computed(() => Number(route.query.page) || 1)
+const { currentPage } = useCurrentPage()
 const { showSuccess } = useCustomToastify()
 
 const replyModal = ref(false)
@@ -216,13 +218,6 @@ const { data, refresh, pending } = await useAsyncData(
 const comments = computed<CommentManagementDTO[]>(() => data.value?.data?.results ?? [])
 const totalCount = computed(() => data.value?.data?.count ?? 0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 10))
-
-const rowNumber = (index: number) => (currentPage.value - 1) * 10 + index + 1
-
-const getFirstLetter = (name?: string | null) => {
-  if (!name) return '?'
-  return Array.from(name.trim())[0]?.toUpperCase() || '?'
-}
 
 useHead(generateSeoMeta({
   title: 'نظرات دریافتی',

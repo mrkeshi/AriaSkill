@@ -97,9 +97,9 @@
         <!-- type icon -->
         <div
           class="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg border"
-          :class="typeStyle(item.type).iconBox"
+          :class="notifStyle(item.type).iconBox"
         >
-          <Icon :name="typeStyle(item.type).icon" class="text-lg" />
+          <Icon :name="notifStyle(item.type).icon" class="text-lg" />
         </div>
 
         <div class="flex-grow min-w-0">
@@ -167,6 +167,8 @@ import {
   markAllNotificationsReadService,
   deleteNotificationService,
 } from '~/services/notification/notification.Service'
+import { notifStyle } from '~/utilities/notificationHelpers'
+import { relativeTime } from '~/utilities/dateHelpers'
 
 definePageMeta({ layout: 'dashboard' })
 
@@ -206,30 +208,6 @@ const filterOptions = [
   { value: 'like_received',  label: 'لایک',         icon: 'mdi:heart-outline' },
   { value: 'broadcast',      label: 'پیام همگانی', icon: 'mdi:bullhorn-outline' },
 ]
-
-// ── Type styling ───────────────────────────────────────────────────────────
-const typeStyle = (type) => {
-  const map = {
-    login_failed:    { iconBox: 'bg-rose-500/15 text-rose-400 border-rose-500/20',     icon: 'mdi:shield-alert-outline' },
-    comment_created: { iconBox: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/20',     icon: 'mdi:comment-outline' },
-    like_received:   { iconBox: 'bg-amber-500/15 text-classic-gold border-amber-500/20', icon: 'mdi:heart-outline' },
-    broadcast:       { iconBox: 'bg-purple-500/15 text-purple-400 border-purple-500/20', icon: 'mdi:bullhorn-outline' },
-  }
-  return map[type] ?? { iconBox: 'bg-blue-500/15 text-blue-400 border-blue-500/20', icon: 'mdi:information-outline' }
-}
-
-// ── Time helper ────────────────────────────────────────────────────────────
-const relativeTime = (iso) => {
-  const diff  = Date.now() - new Date(iso).getTime()
-  const mins  = Math.floor(diff / 60000)
-  const hours = Math.floor(mins / 60)
-  const days  = Math.floor(hours / 24)
-  if (mins < 1)   return 'لحظاتی پیش'
-  if (mins < 60)  return `${mins} دقیقه پیش`
-  if (hours < 24) return `${hours} ساعت پیش`
-  if (days === 1) return 'دیروز'
-  return `${days} روز پیش`
-}
 
 // ── Fetch ──────────────────────────────────────────────────────────────────
 const fetchItems = async () => {

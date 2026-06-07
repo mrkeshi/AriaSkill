@@ -36,15 +36,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue' // اضافه شدن ایمپورت کامپیوتر
 import type { UserSummaryDTO } from '~/models/User/UserDTO'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
+import { userInitialFrom } from '~/utilities/stringHelpers'
 
 const props = defineProps<{ user: UserSummaryDTO }>()
 const avatar = computed(() => resolveMediaUrl(props.user.avatar))
-
-const userInitial = computed(() => {
-  const name = (props.user.full_name?.trim() || props.user.username?.trim() || 'U')
-  return name.charAt(0)
-})
+const userInitial = computed(() => userInitialFrom(props.user))
 </script>

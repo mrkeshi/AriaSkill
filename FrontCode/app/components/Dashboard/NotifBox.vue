@@ -55,22 +55,22 @@
           notif.is_read
             ? 'border-white/5 opacity-60'
             : 'border-white/10 hover:border-white/20 hover:bg-white/[0.04]',
-          typeStyle(notif.type).borderHover,
+          notifStyle(notif.type).borderHover,
         ]"
       >
         <!-- unread accent line -->
         <div
           v-if="!notif.is_read"
           class="absolute right-0 top-0 bottom-0 w-[3px] rounded-r-full transition-all duration-300"
-          :class="typeStyle(notif.type).sideLine"
+          :class="notifStyle(notif.type).sideLine"
         ></div>
 
         <div class="flex items-center gap-4 flex-1 min-w-0">
           <div
             class="w-10 h-10 flex items-center justify-center rounded-xl border shrink-0 transition-transform duration-300 group-hover:scale-105"
-            :class="typeStyle(notif.type).iconBox"
+            :class="notifStyle(notif.type).iconBox"
           >
-            <Icon :name="typeStyle(notif.type).icon" size="18" />
+            <Icon :name="notifStyle(notif.type).icon" size="18" />
           </div>
 
           <div class="flex flex-col gap-1 min-w-0 text-right">
@@ -131,6 +131,8 @@ import {
   markAllNotificationsReadService,
   deleteNotificationService,
 } from '~/services/notification/notification.Service'
+import { notifStyle } from '~/utilities/notificationHelpers'
+import { relativeTime } from '~/utilities/dateHelpers'
 
 // ── State ──────────────────────────────────────────────────────────────────
 const notifications = ref<NotificationDTO[]>([])
@@ -138,55 +140,6 @@ const loading      = ref(true)
 const markingAll   = ref(false)
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
-
-// ── Type styling ───────────────────────────────────────────────────────────
-const typeStyle = (type: string) => {
-  const map: Record<string, { iconBox: string; sideLine: string; borderHover: string; icon: string }> = {
-    login_failed: {
-      iconBox: 'border-rose-500/40 bg-rose-500/10 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.15)]',
-      sideLine: 'bg-rose-500',
-      borderHover: 'hover:border-rose-500/30',
-      icon: 'mdi:shield-alert-outline',
-    },
-    comment_created: {
-      iconBox: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.1)]',
-      sideLine: 'bg-cyan-500',
-      borderHover: 'hover:border-cyan-500/30',
-      icon: 'mdi:comment-outline',
-    },
-    like_received: {
-      iconBox: 'border-amber-500/30 bg-amber-500/10 text-classic-gold shadow-[0_0_15px_rgba(212,175,55,0.1)]',
-      sideLine: 'bg-classic-gold',
-      borderHover: 'hover:border-classic-gold/30',
-      icon: 'mdi:heart-outline',
-    },
-    broadcast: {
-      iconBox: 'border-purple-500/30 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.1)]',
-      sideLine: 'bg-purple-500',
-      borderHover: 'hover:border-purple-500/30',
-      icon: 'mdi:bullhorn-outline',
-    },
-  }
-  return map[type] ?? {
-    iconBox: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
-    sideLine: 'bg-emerald-500',
-    borderHover: 'hover:border-emerald-500/30',
-    icon: 'mdi:bell-outline',
-  }
-}
-
-// ── Time helper ────────────────────────────────────────────────────────────
-const relativeTime = (iso: string) => {
-  const diff = Date.now() - new Date(iso).getTime()
-  const mins  = Math.floor(diff / 60000)
-  const hours = Math.floor(mins / 60)
-  const days  = Math.floor(hours / 24)
-  if (mins < 1)   return 'لحظاتی پیش'
-  if (mins < 60)  return `${mins} دقیقه پیش`
-  if (hours < 24) return `${hours} ساعت پیش`
-  if (days === 1) return 'دیروز'
-  return `${days} روز پیش`
-}
 
 // ── Fetch ──────────────────────────────────────────────────────────────────
 const fetchNotifications = async () => {

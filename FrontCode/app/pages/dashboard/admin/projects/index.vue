@@ -74,7 +74,7 @@
               class="hover:bg-white/5 transition duration-200 group"
             >
               <td class="p-4 text-gray-500 group-hover:text-gray-400 transition">
-                {{ toPersianNumerals(rowNumber(index)) }}
+                {{ toPersianNumerals(rowNumber(index, currentPage.value, pageSize)) }}
               </td>
 
               <td class="p-4">
@@ -120,9 +120,9 @@
               </td>
 
               <td class="p-4">
-                <span :class="statusClass(item.status)" class="inline-flex items-center gap-2 px-2 py-1 rounded-md border text-xs">
-                  <span class="h-2 w-2 rounded-full" :class="statusDotClass(item.status)"></span>
-                  {{ statusLabel(item.status) }}
+                <span :class="projectStatusClass(item.status)" class="inline-flex items-center gap-2 px-2 py-1 rounded-md border text-xs">
+                  <span class="h-2 w-2 rounded-full" :class="projectStatusDotClass(item.status)"></span>
+                  {{ projectStatusLabel(item.status) }}
                 </span>
               </td>
 
@@ -200,21 +200,23 @@ import { deleteAdminProjectService, getAdminProjectsService, updateAdminProjectS
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { toJalali, toPersianNumerals } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
+import { projectStatusLabel, projectStatusClass, projectStatusDotClass } from '~/utilities/projectHelpers'
+import { firstLetter, rowNumber } from '~/utilities/stringHelpers'
+import { useAdminSearch } from '~/composable/useAdminSearch'
+import { useDeleteModal } from '~/composable/useDeleteModal'
+import { useCurrentPage } from '~/composable/useCurrentPage'
 
 definePageMeta({ layout: 'dashboard' })
 useHead({ title: 'مدیریت پروژه‌ها' })
 
 const route = useRoute()
 const { showInfo } = useCustomToastify()
+const { searchInput, searchQuery, submitSearch, clearSearch } = useAdminSearch()
+const { currentPage } = useCurrentPage()
+const { deleteModal, selectedItem: selectedProject, openDelete } = useDeleteModal<ProjectDTO>()
 
 const pageSize = 6
-const deleteModal = ref(false)
-const selectedProject = ref<ProjectDTO | null>(null)
-const searchInput = ref(String(route.query.search || ''))
 const statusLoadingSlug = ref<string | null>(null)
-
-const currentPage = computed(() => Number(route.query.page) || 1)
-const searchQuery = computed(() => String(route.query.search || '').trim())
 
 const { data, refresh, pending } = await useAsyncData(
   'admin-projects-list',
@@ -232,71 +234,7 @@ const deleteDescription = computed(() => {
   return `آیا برای حذف پروژه ${title} مطمئن هستید؟`
 })
 
-watch(searchQuery, (value) => {
-  searchInput.value = value
-})
-
-const rowNumber = (index: number) => ((currentPage.value - 1) * pageSize) + index + 1
-
-const firstLetter = (value?: string | null) => {
-  if (!value) return '?'
-  return Array.from(value.trim())[0]?.toUpperCase() || '?'
-}
-
-const statusLabel = (status: string) => {
-  const labels: Record<string, string> = {
-    pending: 'در انتظار بررسی',
-    approved: 'فعال',
-    rejected: 'غیرفعال',
-  }
-  return labels[status] ?? status
-}
-
-const statusClass = (status: string) => {
-  const classes: Record<string, string> = {
-    pending: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
-    approved: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
-    rejected: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
-  }
-  return classes[status] ?? 'bg-white/10 text-gray-300 border-white/20'
-}
-
-const statusDotClass = (status: string) => {
-  const classes: Record<string, string> = {
-    pending: 'bg-amber-400',
-    approved: 'bg-emerald-400',
-    rejected: 'bg-rose-400',
-  }
-  return classes[status] ?? 'bg-gray-400'
-}
-
 const isActiveProject = (project: ProjectDTO) => project.status === 'approved'
-
-const submitSearch = async () => {
-  await navigateTo({
-    query: {
-      ...route.query,
-      page: undefined,
-      search: searchInput.value.trim() || undefined,
-    },
-  })
-}
-
-const clearSearch = async () => {
-  searchInput.value = ''
-  await navigateTo({
-    query: {
-      ...route.query,
-      page: undefined,
-      search: undefined,
-    },
-  })
-}
-
-const openDelete = (project: ProjectDTO) => {
-  selectedProject.value = project
-  deleteModal.value = true
-}
 
 const deleteSelectedProject = async () => {
   if (!selectedProject.value) return

@@ -93,7 +93,7 @@
               :class="{ 'opacity-50': item.status === 'inactive' }"
             >
               <td class="p-4 text-center text-gray-500 font-mono text-xs">
-                {{ toPersianNumerals(rowNumber(index)) }}
+                {{ toPersianNumerals(rowNumber(index, currentPage.value, 10)) }}
               </td>
 
               <td class="p-4">
@@ -214,6 +214,10 @@ import {
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { toJalaliLong, toPersianNumerals } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
+import { firstLetter, rowNumber } from '~/utilities/stringHelpers'
+import { useAdminSearch } from '~/composable/useAdminSearch'
+import { useCurrentPage } from '~/composable/useCurrentPage'
+import { useDeleteModal } from '~/composable/useDeleteModal'
 
 definePageMeta({ layout: 'dashboard' })
 useHead({ title: 'مدیریت نظرات' })
@@ -221,14 +225,11 @@ useHead({ title: 'مدیریت نظرات' })
 const route = useRoute()
 const router = useRouter()
 const { showInfo } = useCustomToastify()
+const { searchInput, searchQuery, submitSearch, clearSearch } = useAdminSearch()
 
-const currentPage = computed(() => Number(route.query.page) || 1)
-const searchQuery = computed(() => String(route.query.search || '').trim())
+const { currentPage } = useCurrentPage()
 const activeStatus = computed(() => (route.query.status as 'active' | 'inactive' | undefined) ?? undefined)
-
-const searchInput = ref(String(route.query.search || ''))
-const deleteModal = ref(false)
-const selectedComment = ref<CommentManagementDTO | null>(null)
+const { deleteModal, selectedItem: selectedComment, openDelete } = useDeleteModal<CommentManagementDTO>()
 const actionLoadingId = ref<number | null>(null)
 
 const statusTabs: { label: string; value: 'active' | 'inactive' | undefined }[] = [
@@ -251,30 +252,6 @@ const deleteDescription = computed(() => {
   const name = selectedComment.value?.user_name ?? ''
   return `آیا مطمئن هستید که می‌خواهید نظر «${name}» را حذف کنید؟`
 })
-
-watch(searchQuery, (v) => { searchInput.value = v })
-
-const rowNumber = (index: number) => (currentPage.value - 1) * 10 + index + 1
-
-const firstLetter = (name?: string | null) => {
-  if (!name) return '?'
-  return Array.from(name.trim())[0]?.toUpperCase() || '?'
-}
-
-const submitSearch = () => {
-  router.push({
-    query: {
-      ...route.query,
-      page: undefined,
-      search: searchInput.value.trim() || undefined,
-    },
-  })
-}
-
-const clearSearch = () => {
-  searchInput.value = ''
-  router.push({ query: { ...route.query, page: undefined, search: undefined } })
-}
 
 const setStatusTab = (value: 'active' | 'inactive' | undefined) => {
   router.push({
@@ -299,11 +276,6 @@ const toggleStatus = async (item: CommentManagementDTO) => {
   } finally {
     actionLoadingId.value = null
   }
-}
-
-const openDelete = (item: CommentManagementDTO) => {
-  selectedComment.value = item
-  deleteModal.value = true
 }
 
 const confirmDelete = async () => {

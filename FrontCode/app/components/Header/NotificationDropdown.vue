@@ -70,9 +70,9 @@
                 class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2 shrink-0"
               ></span>
               <Icon
-                :name="typeIcon(notif.type)"
+                :name="notifIcon(notif.type)"
                 class="text-xl flex-shrink-0 mt-0.5"
-                :class="typeIconColor(notif.type)"
+                :class="notifIconColor(notif.type)"
               />
               <div class="space-y-1 text-right flex-1 min-w-0">
                 <p class="text-bone-white font-bold text-sm truncate">{{ notif.title }}</p>
@@ -107,45 +107,14 @@ import {
   markNotificationReadService,
   markAllNotificationsReadService,
 } from '~/services/notification/notification.Service'
+import { notifIcon, notifIconColor } from '~/utilities/notificationHelpers'
+import { relativeTime } from '~/utilities/dateHelpers'
 
 // ── State ──────────────────────────────────────────────────────────────────
-const isOpen       = ref(false)
-const loading      = ref(false)
+const isOpen        = ref(false)
+const loading       = ref(false)
 const notifications = ref<NotificationDTO[]>([])
-const unreadCount  = ref(0)
-
-// ── Helpers ────────────────────────────────────────────────────────────────
-const typeIcon = (type: NotificationType | string): string => {
-  const map: Record<string, string> = {
-    login_failed:    'mdi:shield-alert-outline',
-    comment_created: 'mdi:comment-text-outline',
-    like_received:   'mdi:heart-outline',
-    broadcast:       'mdi:bullhorn-outline',
-  }
-  return map[type] ?? 'mdi:bell-badge-outline'
-}
-
-const typeIconColor = (type: NotificationType | string): string => {
-  const map: Record<string, string> = {
-    login_failed:    'text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.5)]',
-    comment_created: 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]',
-    like_received:   'text-classic-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]',
-    broadcast:       'text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]',
-  }
-  return map[type] ?? 'text-classic-gold drop-shadow-[0_0_8px_rgba(214,175,55,0.5)]'
-}
-
-const relativeTime = (iso: string) => {
-  const diff  = Date.now() - new Date(iso).getTime()
-  const mins  = Math.floor(diff / 60000)
-  const hours = Math.floor(mins / 60)
-  const days  = Math.floor(hours / 24)
-  if (mins < 1)   return 'لحظاتی پیش'
-  if (mins < 60)  return `${mins} دقیقه پیش`
-  if (hours < 24) return `${hours} ساعت پیش`
-  if (days === 1) return 'دیروز'
-  return `${days} روز پیش`
-}
+const unreadCount   = ref(0)
 
 // ── Data fetching ──────────────────────────────────────────────────────────
 const fetchAll = async () => {
