@@ -49,15 +49,17 @@ VUE
       </div>
  
       <!-- Chart -->
+      <!-- DashboardApexWrapper is a .client.vue component, so Nuxt skips it   -->
+      <!-- on the server entirely — no SSR "failed to resolve apexchart" warn. -->
       <div v-else class="w-full h-[400px] text-black" dir="ltr">
         <ClientOnly>
-          <apexchart
+          <DashboardApexWrapper
             width="100%"
             height="100%"
             type="area"
             :options="chartOptions"
             :series="series"
-          ></apexchart>
+          />
           <template #fallback>
             <div class="w-full h-full flex flex-col items-center justify-center gap-3 text-gray-500 text-sm">
               <Icon name="line-md:loading-twotone-loop" size="24" class="text-classic-gold" />
