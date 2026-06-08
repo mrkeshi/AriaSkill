@@ -1,6 +1,6 @@
 <template>
   <UiCardBlury>
-    <!-- Header & Tabs -->
+
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
       <h2 class="text-base font-bold text-white tracking-wide">اعلان‌ها</h2>
 
@@ -73,7 +73,7 @@
       <div v-for="i in 5" :key="i" class="h-14 rounded-lg bg-white/5 animate-pulse"></div>
     </div>
 
-    <!-- Empty state -->
+
     <div
       v-else-if="items.length === 0"
       class="flex flex-col items-center justify-center py-10 text-gray-500"
@@ -82,7 +82,6 @@
       <p class="text-sm">هیچ اعلانی در این بخش وجود ندارد.</p>
     </div>
 
-    <!-- Notification list -->
     <div v-else class="flex flex-col gap-2">
       <div
         v-for="item in items"

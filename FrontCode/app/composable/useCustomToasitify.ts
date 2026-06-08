@@ -1,5 +1,6 @@
     import type { ToastParams } from "~/models/ToastifyDTO"
-
+// Composable that provides custom toast notification functions for error, success, and info messages using the useToastify hook, allowing for consistent styling and behavior across the application
+// The useCustomToastify composable defines three functions: showError, showSuccess, and showInfo, which accept parameters for title, message, toast ID, icon, RTL support, auto-close duration, and other options to display customized toast notifications throughout the application.
     export function useCustomToastify() {
     const showError = ({
         title,

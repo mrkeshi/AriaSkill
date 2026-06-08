@@ -34,7 +34,7 @@
 
   </div>
 </template>
-
+<!-- According Card component -->
 <script lang="ts" setup>
 import { ref } from "vue"
 

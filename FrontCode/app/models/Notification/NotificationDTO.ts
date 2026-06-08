@@ -1,3 +1,5 @@
+// This file defines the types for the Notification system in a TypeScript project. 
+// It includes interfaces for individual notifications, lists of notifications, unread counts, and broadcast messages.
 export type NotificationType =
   | 'login_failed'
   | 'comment_created'

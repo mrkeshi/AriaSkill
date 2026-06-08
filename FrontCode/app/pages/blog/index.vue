@@ -1,3 +1,4 @@
+<!-- Blog Index Page -->
 <template>
   <UiCardBlury
     class="min-h-[65vh] mt-6 lg:mt-12 flex flex-col items-center justify-center text-center

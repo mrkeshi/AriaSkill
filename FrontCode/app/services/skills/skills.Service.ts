@@ -1,3 +1,4 @@
+// This file defines the services for handling skill-related operations in a TypeScript project.
 import type { ApiResponse } from "~/models/ApiResponseDTO"
 import type { CreateSkillDTO, skillItem, SkillSDTO } from "~/models/Skill/SkillDTO"
 import { FetchX } from "~/utilities/fetchX"

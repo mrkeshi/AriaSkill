@@ -41,6 +41,9 @@
 
 
 <script lang="ts" setup>
+
+// CheckBox component integrated with vee-validate for form validation and error handling
+
 import { useField } from 'vee-validate'
 
 const props = defineProps({

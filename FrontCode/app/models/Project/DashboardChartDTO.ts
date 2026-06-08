@@ -1,3 +1,4 @@
+// This file defines the types for the Dashboard Chart data transfer object (DTO) in a TypeScript project.
 export interface DashboardChartDTO {
   /** ISO date strings, e.g. ["2026-05-20", "2026-05-21", ...] (max 20 items) */
   days: string[]

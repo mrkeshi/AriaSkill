@@ -23,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+// FileInput component integrated with vee-validate for form validation and error handling, allowing users to select files with specified types and displaying error messages when necessary
 import { useField } from 'vee-validate'
 import { watch } from 'vue'
 import type { PropType } from 'vue'

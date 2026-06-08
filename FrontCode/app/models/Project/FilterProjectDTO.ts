@@ -1,4 +1,5 @@
-
+// This file defines the types for filtering projects in a TypeScript project.
+// It includes the ProjectCategory type, which lists various categories of projects, and the FilterProjectDTO type, which specifies the structure of the data transfer object used for filtering projects based on various criteria such as category, years, technology, search query, and sorting options.
 export type ProjectCategory =
   | "UI/UX Design"
   | "Frontend Development"

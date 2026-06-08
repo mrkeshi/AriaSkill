@@ -1,6 +1,7 @@
 import type { SkillDTO } from "../Skill/SkillDTO"
 import type { UserSummaryDTO } from "../User/UserDTO"
-
+// This file defines the types for the Project data transfer objects (DTOs) in a TypeScript project.
+// It includes interfaces for individual projects, lists of projects, and the structure for creating new projects.
 export interface ProjectDTO{
     id:number
     title:string

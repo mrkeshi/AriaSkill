@@ -1,4 +1,5 @@
 import type { FilterProjectDTO, ProjectCategory, FilterSort } from "~/models/Project/FilterProjectDTO"
+// Composable that manages project filters based on URL query parameters, allowing users to toggle filters for technology, years, and categories, and apply or reset filters while keeping the URL in sync with the current filter state
 
 export const useProjectFilters = () => {
   const route = useRoute()

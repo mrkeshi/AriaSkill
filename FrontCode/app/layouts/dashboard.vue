@@ -1,3 +1,4 @@
+<!-- Dashboard Layout -->
 <template>
   <div
     class="min-h-screen grid "

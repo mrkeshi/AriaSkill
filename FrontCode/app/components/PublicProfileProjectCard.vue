@@ -62,6 +62,11 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * ProjectCard Component: Renders a compact, grid-friendly project card with high-contrast, cyberpunk-inspired dark aesthetics.
+ * Features smooth glassmorphic hover effects, localized Jalali date conversion, and responsive icon fallbacks for associated tech skills.
+ * Orchestrates structural layouts using Tailwind utility classes, capping skill badges at a maximum of three items for clean visuals.
+ */
 import type { PublicProjectMiniDTO } from '~/models/User/PublicProfileDTO'
 import { toPersianNumerals, toJalaliLong } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'

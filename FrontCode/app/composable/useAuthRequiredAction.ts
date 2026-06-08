@@ -1,6 +1,6 @@
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { useAuthStore } from '~/stores/authStore'
-
+// Composable that provides a function to ensure the user is authenticated before performing certain actions, showing a toast notification if authentication is required
 export const useAuthRequiredAction = () => {
   const authStore = useAuthStore()
   const { showInfo } = useCustomToastify()

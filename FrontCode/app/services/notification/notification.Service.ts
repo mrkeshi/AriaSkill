@@ -1,3 +1,8 @@
+// This file defines the services for handling notifications in a TypeScript project.
+// It includes functions for fetching recent notifications, marking notifications as read, deleting notifications, sending broadcast messages, and fetching dashboard statistics.
+// The services use a utility function `FetchX` to make API calls and return typed responses based on the defined DTOs (Data Transfer Objects).
+
+
 import type { ApiResponse } from '~/models/ApiResponseDTO'
 import type { DashboardStatsDTO } from '~/models/Dashboard/dashboardTypes'
 import type {
@@ -11,7 +16,6 @@ import type {
 } from '~/models/Notification/NotificationDTO'
 import { FetchX } from '~/utilities/fetchX'
 
-// ── Read ──────────────────────────────────────────────────────────────────
 
 export const getRecentNotificationsService = (): Promise<ApiResponse<NotificationDTO[]>> =>
   FetchX('notifications/recent/', { method: 'get' })

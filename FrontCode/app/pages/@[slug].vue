@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen text-slate-100 pb-20" dir="rtl">
 
-    <!-- لودینگ -->
     <div v-if="pending" class="max-w-7xl mx-auto pt-20 px-4 sm:px-6 lg:px-8 flex flex-col gap-8">
       <SkeletonSimple class="w-full h-64 rounded-3xl" />
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
@@ -13,7 +12,6 @@
       </div>
     </div>
 
-    <!-- کاربر پیدا نشد -->
     <div v-else-if="notFound" class="flex flex-col items-center justify-center min-h-[70vh] gap-6 text-center px-4">
       <div class="w-24 h-24 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center mb-2 shadow-[0_0_40px_rgba(212,175,55,0.15)] relative">
         <div class="absolute inset-0 rounded-full border-t-2 border-classic-gold animate-spin-slow"></div>
@@ -28,20 +26,15 @@
       </NuxtLink>
     </div>
 
-    <!-- پروفایل کاربر -->
     <div v-else-if="profile" class="max-w-7xl mx-auto pt-10 sm:pt-16 px-4 sm:px-6 lg:px-8 flex flex-col gap-8">
       
-      <!-- ================= باکس هدر اصلی ================= -->
       <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10 rounded-[2rem] shadow-2xl relative overflow-hidden group">
         
-        <!-- افکت گرید متحرک تمام ارتفاع (پوشش کل هدر) -->
         <div class="absolute inset-0 opacity-[0.03] animate-grid-shift pointer-events-none" style="background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 40px 40px;"></div>
 
-        <!-- گوی‌های نورانی متحرک پس‌زمینه هدر -->
         <div class="absolute -top-32 -right-32 w-[30rem] h-[30rem] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none animate-blob"></div>
         <div class="absolute -bottom-32 -left-32 w-[30rem] h-[30rem] bg-classic-gold/15 rounded-full blur-[100px] pointer-events-none animate-blob animation-delay-2000"></div>
 
-        <!-- بنر پس‌زمینه (بخش بالایی هدر) -->
         <div class="relative w-full h-48 sm:h-64 ">
           <!-- یوزرنیم بک‌گراند بزرگ -->
           <div dir="ltr" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/[0.02] text-7xl sm:text-9xl font-black select-none tracking-tighter pointer-events-none font-pelak uppercase w-full text-center transform group-hover:scale-105 transition-transform duration-700">
@@ -289,7 +282,6 @@ watchEffect(() => {
 </script>
 
 <style scoped>
-/* چرخش ملایم برای حالت پیدا نشدن کاربر */
 .animate-spin-slow {
   animation: spin 3s linear infinite;
 }
@@ -298,7 +290,6 @@ watchEffect(() => {
   to { transform: rotate(360deg); }
 }
 
-/* انیمیشن گوی‌های نئونی بک گراند */
 @keyframes blob {
   0%, 100% { transform: translate(0px, 0px) scale(1); }
   50% { transform: translate(25px, -25px) scale(1.1); }
@@ -310,7 +301,6 @@ watchEffect(() => {
   animation-delay: 2s;
 }
 
-/* حرکت ریتمیک شبکه گرید */
 @keyframes grid-shift {
   from { background-position: 0 0; }
   to { background-position: 40px 40px; }

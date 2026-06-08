@@ -1,3 +1,4 @@
+// This file defines the types for the Dashboard component in a TypeScript project.
 export interface StatCard {
   id:          number
   label:       string
