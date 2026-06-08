@@ -92,8 +92,8 @@
               class="hover:bg-white/[0.04] transition-all duration-200 group"
               :class="{ 'opacity-50': item.status === 'inactive' }"
             >
-              <td class="p-4 text-center text-gray-500 font-mono text-xs">
-                {{ toPersianNumerals(rowNumber(index, currentPage.value, 10)) }}
+              <td class="p-4 text-center text-gray-500  text-xs">
+                {{ toPersianNumerals(rowNumber(index, currentPage, 10)) }}
               </td>
 
               <td class="p-4">
@@ -206,6 +206,22 @@
 
 <script setup lang="ts">
 
+/**
+ * @component AdminCommentManagement
+ * @description Back-office dashboard interface for managing project comments.
+ * Provides comprehensive CRUD-like controls including search, filter, 
+ * status activation toggle, and deletion workflows.
+ * * @features
+ * - Reactive Server-Side Pagination & Data Fetching via Nuxt `useAsyncData`.
+ * - Dynamic filtering using query params via `statusTabs`.
+ * - Multi-criteria search (message content, username, project title).
+ * - Inline status toggling with independent loading states (`actionLoadingId`).
+ * - Deep localization featuring RTL layout, Jalali date parsing, and Persian numerals.
+ * * @composables
+ * - `useAdminSearch`  : Manages debounced/triggered text filtering.
+ * - `useCurrentPage`  : Synchronizes state with active pagination index.
+ * - `useDeleteModal`  : Safe deletion context & state coordinator.
+ */
 
 import type { CommentManagementDTO } from '~/models/Comment/SendCommentDTO'
 import {

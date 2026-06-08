@@ -5,14 +5,11 @@ from typing import Any
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
-from notification.models import Notification, NotificationType
+from notification.models import BroadcastLog, Notification, NotificationType
 
 User = get_user_model()
 
-
 class NotificationService:
-
-    # ── Generic create ────────────────────────────────────────────────────────
 
     @staticmethod
     def create(
@@ -36,8 +33,6 @@ class NotificationService:
             related_user=related_user,
             metadata=metadata or {},
         )
-
-    # ── Feed helpers ──────────────────────────────────────────────────────────
 
     @staticmethod
     def feed_for(user) -> QuerySet:
@@ -74,8 +69,6 @@ class NotificationService:
     def delete(notification: Notification) -> None:
         notification.soft_delete()
 
-    # ── Specific notification creators ────────────────────────────────────────
-
     @staticmethod
     def login_failed(user, request=None, identifier: str = '') -> Notification | None:
 
@@ -98,7 +91,7 @@ class NotificationService:
 
     @staticmethod
     def comment_received(project_owner, project, commenter) -> Notification | None:
-        """Notify project owner that someone commented on their project."""
+        
         commenter_name = (
             f'{commenter.first_name} {commenter.last_name}'.strip()
             or commenter.username
@@ -115,7 +108,7 @@ class NotificationService:
 
     @staticmethod
     def like_received(project_owner, project, liker) -> Notification | None:
-        """Notify project owner that someone liked their project."""
+        
         liker_name = (
             f'{liker.first_name} {liker.last_name}'.strip()
             or liker.username
@@ -132,10 +125,7 @@ class NotificationService:
 
     @staticmethod
     def broadcast(admin_user, message: str, title: str = 'پیام همگانی') -> int:
-        """
-        Send a broadcast notification from admin to ALL active users.
-        Returns the number of notifications created.
-        """
+        
         users = User.objects.filter(is_active=True)
         notifications = [
             Notification(
@@ -149,4 +139,29 @@ class NotificationService:
             for u in users
         ]
         created = Notification.objects.bulk_create(notifications)
-        return len(created)
+        count = len(created)
+        BroadcastLog.objects.create(
+            sent_by=admin_user,
+            title=title,
+            message=message,
+            sent_to_count=count,
+        )
+
+        return count
+
+class BroadcastLogService:
+
+    @staticmethod
+    def list_logs(page: int = 1, page_size: int = 8):
+        
+        return (
+            BroadcastLog.objects
+            .select_related('sent_by')
+            .order_by('-sent_at')
+        )
+
+    @staticmethod
+    def clear_all() -> int:
+        
+        count, _ = BroadcastLog.objects.all().delete()
+        return count

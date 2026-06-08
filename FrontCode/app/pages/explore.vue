@@ -120,6 +120,8 @@
 </template>
 
 <script lang="ts" setup>
+// @page Explore 
+// This page allows users to explore and discover various projects. It includes a search bar for quick filtering, a list of popular technologies for quick access, and sorting options to organize the displayed projects. The projects are fetched from the server based on the applied filters and sorting criteria, and pagination is implemented for easy navigation through multiple pages of projects. SEO metadata is generated to improve search engine visibility for this page.
 import { getPublicProjectsService, getProjectYearsService } from '~/services/projects/project.Service'
 import { getSkillsService } from '~/services/skills/skills.Service'
 import { generateSeoMeta } from '~/utilities/seo'
@@ -128,15 +130,13 @@ import type { skillItem } from '~/models/Skill/SkillDTO'
 
 const router = useRouter()
 
-// جستجوی سریع
 const quickSearch = ref('')
 
-// تکنولوژی‌ها
 const quickTechnologies = ref<skillItem[]>([])
 const selectedTechs = ref<string[]>([])
 const techPending = ref(true)
 
-// مرتب‌سازی
+
 const sortOptions = [
   { label: 'جدیدترین', value: 'new' },
   { label: 'محبوب‌ترین', value: 'popular' },
@@ -145,7 +145,7 @@ const sortOptions = [
 ]
 const activeSortOption = ref('new')
 
-// پروژه‌ها
+
 const projects = ref<ProjectDTO[]>([])
 const projectsPending = ref(true)
 const totalProjects = ref(0)

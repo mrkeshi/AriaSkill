@@ -22,6 +22,8 @@
 </template>
 
 <script setup lang="ts">
+// @page Home
+// This is the home page of the website, which includes a hero section, a how-it-works section, and a showcase of projects. The projects are fetched from the server and displayed in
 import { getPublicProjectsService } from '~/services/projects/project.Service'
 import { generateSeoMeta } from '~/utilities/seo'
 
@@ -37,7 +39,7 @@ const homeProjects = computed(() => {
 })
 
 useHead(generateSeoMeta({
-  title: 'آریا ',
+  title: 'آریا کرافت ',
   description: 'نمایش پروژه‌های آریا اسکیل',
   image: '',
   url: '',

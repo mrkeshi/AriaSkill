@@ -85,6 +85,17 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @component AdminSkillsList
+ * @description Master data table view for querying, auditing, and deleting technical system skills.
+ * Orchestrates pagination lifecycles via decoupled route/composable boundaries.
+ * * @data_pipeline
+ * - Async Fetching: Wraps `getSkillsService` inside a tracked `useAsyncData` container, watching reactive page index shifts.
+ * - Model Proxying: Maps untyped response entities into a computed, type-guarded `skillItem[]` array.
+ * * @composables
+ * - `useCurrentPage` : Manages paginated index states coupled automatically to query parameters.
+ * - `useDeleteModal`: Tracks modal visibility states and holds targeted `number` IDs pending API confirmation.
+ */
 import type { skillItem } from '~/models/Skill/SkillDTO'
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { deleteSkillsService, getSkillsService } from '~/services/skills/skills.Service'

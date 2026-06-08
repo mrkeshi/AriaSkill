@@ -24,6 +24,21 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @page ProjectMutationCoordinator
+ * @description Administrative orchestration script for fetching, re-hydrating, and updating existing project records.
+ * Serves as an isolated presentation controller managing reactive parameter keys and binary data delivery.
+ * 
+ * @logic_flow
+ * - Dynamic Key Hydration: Uses a computed `slug` token extracted from current path parameters to drive server-side cached data pools.
+ * - Reactive Isolation: Intercepts entity modifications via standard multi-part payload envelopes (`FormData`), keeping local views decoupled.
+ * - View Freeze Protection: Binds a standalone operational loop (`loading = true`) across async executions to guard against interface collision.
+ * 
+ * @data_transport
+ * - Query Management: Registers automatic request re-evaluation triggers inside an asynchronous wrapper (`useAsyncData`) watching path modifications.
+ * - Contextual Routing: Enforces strict programmatic layout updates via client-side router migrations upon transaction resolution.
+
+ */
 import { ref, computed } from 'vue'
 import { retrieveProjectService, updateProjectService } from '~/services/projects/project.Service'
 import { useCustomToastify } from '~/composable/useCustomToasitify'

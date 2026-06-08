@@ -58,6 +58,8 @@
 </template>
 
 <script setup lang="ts">
+// @page ProjectsFilter
+// This page allows users to filter projects based on various criteria like technology, year, and category. It uses a custom composable `useProjectFilters` to manage filter state and apply filters to the project list. The filtered projects are fetched from the server using `getPublicProjectsService` and displayed in a responsive grid layout. The page also includes SEO metadata for better search engine visibility.
 import { useProjectFilters } from '~/composable/useProjectFilters'
 import { getPublicProjectsService } from '~/services/projects/project.Service'
 import { generateSeoMeta } from '~/utilities/seo'

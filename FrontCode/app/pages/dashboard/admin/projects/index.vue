@@ -74,7 +74,7 @@
               class="hover:bg-white/5 transition duration-200 group"
             >
               <td class="p-4 text-gray-500 group-hover:text-gray-400 transition">
-                {{ toPersianNumerals(rowNumber(index, currentPage.value, pageSize)) }}
+                {{ toPersianNumerals(rowNumber(index, currentPage, pageSize)) }}
               </td>
 
               <td class="p-4">
@@ -195,6 +195,25 @@
 </template>
 
 <script setup lang="ts">
+
+/**
+ * @page AdminProjectManagement
+ * @description Master control panel for overseeing, validating, and auditing registered user projects.
+ * Integrates a rich tabular layout tracking interaction metrics alongside granular status workflows.
+ * 
+ * @features
+ * - Server-driven Pagination: Orchestrated automatically via watchable global query state.
+ * - Project KPIs: Displays localized quantitative insight badges (Downloads, Likes, Views).
+ * - Async Status Guard: Employs target row locking via `statusLoadingSlug` to prevent double-submits.
+ * - Dynamic Statusing: Maps conditional styling structures derived from utility dictionary decorators.
+ * 
+ * @composables
+ * - `useAdminSearch` : Handles isolated side-effect input string query submittals.
+ * - `useCurrentPage` : Retains synchronized pagination indices mapped directly to API page states.
+ * - `useDeleteModal`: Manages the lifecycle of project dismissal contexts via confirmation modals.
+ * 
+
+ */
 
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 import { deleteAdminProjectService, getAdminProjectsService, updateAdminProjectStatusService } from '~/services/projects/project.Service'

@@ -114,7 +114,8 @@
 </template>
 
 <script setup lang="ts">
-
+// @page UserRegister
+// This page allows users to register for an account on the website. It includes a form with fields for first name, last name, username, email, password, and password confirmation. The form uses VeeValidate for validation and displays appropriate error messages. Upon successful registration, a success message is shown, and the user is prompted to check their email for account activation. The page also includes an option to register using Google authentication. SEO metadata is generated for better search engine visibility. 
 import { reactive, ref } from 'vue'
 import { Form } from 'vee-validate';
 import type { RegisterDTO } from '~/models/User/AuthDTO';

@@ -15,6 +15,19 @@
   </div>
 </template>
 <script lang="ts" setup>
+/**
+ * @page AriaCraftDashboardIndex
+ * @description Central administrative overview deck orchestrating primary user metrics, system notifications, and analytics charts.
+ * Acts as a layout root layout container for nested data visualizers and telemetry cards.
+ * 
+ * @architecture
+ * - Grid Geometry: deploys a responsive 3-column composite view dividing interactive time-series plots and messaging boxes.
+ * - Sub-Component Scope: Lazy-resolves global auto-imported UI elements while strictly declaring explicit localized graphing widgets.
+ * - Style Capsule: Implements legacy layout classes (`.stat-card`, `.project-row`) scoped to secure layout presentation boundaries.
+ * 
+ * @metadata
+ * - SEO Layer: Populates standard meta keys and access authorship configurations onto the active document head context.
+ */
 import DownloadChartVisitProject from '~/components/Dashboard/DownloadChartVisitProject.vue';
 import CardBlury from '~/components/Ui/CardBlury.vue';
 import { generateSeoMeta } from '~/utilities/seo';

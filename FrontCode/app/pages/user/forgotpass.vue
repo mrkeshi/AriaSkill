@@ -1,4 +1,3 @@
-```vue
 <template>
   <div>
     <transition name="slide-up">
@@ -60,6 +59,8 @@
 </template>
 
 <script setup lang="ts">
+// @page UserForgotPassword
+// This page allows users to request a password reset link by entering their email address. It uses a form with validation to ensure the email is in the correct format, and upon submission, it calls
 import {ref } from 'vue'
 import { ResetPassowrdWithEmailSchema } from '~/validation/User/UserValidation'
 import { Form } from 'vee-validate'

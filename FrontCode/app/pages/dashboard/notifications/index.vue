@@ -158,6 +158,22 @@
 </template>
 
 <script setup>
+/**
+ * @page AdminNotificationCenterLog
+ * @description Advanced back-office notification auditing log featuring multi-tiered criteria filtering.
+ * Bridges asynchronous rest streams directly with reactive pinia global navigation badge handlers.
+ * 
+ * @logic_flow
+ * - Dynamic Filtering: Cascades combined watcher matrices (`activeTab`, `typeFilter`, `page`) into standard unified resource requests.
+ * - Tab State Mutations: Enforces implicit routing resets (`page.value = 1`) upon toggle transitions to eliminate layout truncation.
+ * - Reactive Interception: Manages conditional component slicing within `markRead` routines to prune visual nodes locally on success.
+ * 
+ * @store_synchronization
+ * - Pinia Bridge: Triggers manual internal decrements (`notifStore.decrement`) and global flushes (`notifStore.reset`) 
+ *   to ensure header layout indicators map exactly to the updated transactional log states.
+ * 
+ * @author Alireza Keshavarz
+ */
 import { ref, computed, watch, onMounted } from 'vue'
 import { generateSeoMeta } from '~/utilities/seo'
 import {
@@ -184,7 +200,6 @@ const seo = generateSeoMeta({
 })
 useHead(seo)
 
-// ── State ──────────────────────────────────────────────────────────────────
 const activeTab  = ref('unread')
 const typeFilter = ref('')
 const loading    = ref(true)

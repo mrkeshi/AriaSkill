@@ -65,6 +65,18 @@
   </div>
 </template>
 <script setup lang="ts">
+/**
+ * @page AdminEditSkill
+ * @description Administrative mutation interface for updating persistent system skill data models and binary assets.
+ * * @lifecycle_hydration
+ * - Initial Hook: Ingests `route.query.id` on mount; fetches the remote entity record via `retriveSkillsService`.
+ * - Fallback Guard: Implicitly redirects to index listing if query keys are invalid or fetch requests fail.
+ * - Hydration State: Tracks parallel loader refs (`pageLoading` vs `loading`) to secure UI trigger actions.
+ * * @memory_management
+ * - String vs Blob Tracking: Differentiates remote resource URLs (strings) from transient uploaded binary references.
+ * - Selective Release: Uses targeted `.startsWith('blob:')` evaluations to ensure native memory blocks are only
+ * revoked for newly staged local file uploads, preserving static server-side URLs during component mutations.
+ */
 import { reactive, ref, watch, onBeforeUnmount, onMounted } from 'vue'
 import { Form } from 'vee-validate'
 import { EditSkillsSchema } from '~/validation/Skills/CreateSkills'
