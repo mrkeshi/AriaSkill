@@ -25,6 +25,8 @@ const pages = computed(() => {
   }
   return range
 })
+// Pagination component that displays page numbers with Persian numerals and allows navigation between 
+// pages using NuxtLink, showing previous and next buttons when applicable
 </script>
 
 <template>

@@ -1,3 +1,4 @@
+// This file defines the types for editing user information in a TypeScript project.
 export interface EditUserDTO{
     avatar:null | string | File,
     avatr?:null | string,

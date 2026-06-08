@@ -54,6 +54,21 @@
 </template>
 
 <script setup>
+/**
+ * ReplyModal Component
+ * 
+ * A reusable modal dialog that allows users to write and submit a reply 
+ * to a specific comment. Features a blurred backdrop backdrop, smooth entry/exit 
+ * transitions, RTL support, and handles loading states during submission.
+ * 
+ * @props {Boolean} modelValue - Controls the visibility of the modal (v-model).
+ * @props {String} author - The name of the original comment's author.
+ * @props {String} comment - The text content of the original comment being replied to.
+ * @props {Function} onSubmit - Async callback function triggered when the reply is submitted.
+ * 
+ * @emits update:modelValue - Emitted to sync the modal's visibility state with the parent.
+ */
+
 import { ref } from "vue"
 
 const props = defineProps({

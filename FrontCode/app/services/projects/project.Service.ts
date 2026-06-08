@@ -1,3 +1,7 @@
+// This file defines the services for handling project-related operations in a TypeScript project.
+// It includes functions for fetching projects, creating projects, liking/unliking projects, downloading projects, managing comments, and admin operations.
+// The services use a utility function `FetchX` to make API calls and return typed responses based on the defined DTOs (Data Transfer Objects).
+
 import type { ApiResponse } from '~/models/ApiResponseDTO'
 import type { CommentDTO, CommentListDTO, CommentManagementDTO, ProjectCommentListDTO, SendCommentDTO } from '~/models/Comment/SendCommentDTO'
 import type { ProjectDTO, ProjectListDTO } from '~/models/Project/ProjectDTO'

@@ -255,7 +255,7 @@ const sendBroadcast = async () => {
   }
 }
 
-// ─── History (broadcast type only) ────────────────────────────────────────
+// ─── History (broadcast type only) 
 const broadcastsSent = ref(0)
 const totalUnread    = ref(0)
 const broadcastHistory    = ref([])
@@ -289,6 +289,9 @@ onMounted(async () => {
     totalUnread.value = (res?.data ?? res)?.unread_count ?? 0
   } catch { /* silent */ }
 })
+
+
+
 </script>
 
 <style scoped>

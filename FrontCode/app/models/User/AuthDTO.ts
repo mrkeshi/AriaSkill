@@ -1,3 +1,5 @@
+// This file defines the types for the authentication-related data transfer objects (DTOs) in a TypeScript project.
+// It includes interfaces for login, registration, password reset, and user activation processes, as well as the structure of the authenticated user data.
 import type { UserDTO } from "./UserDTO"
 
 export interface LoginDTO{

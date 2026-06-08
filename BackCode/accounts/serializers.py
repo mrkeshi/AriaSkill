@@ -315,6 +315,8 @@ class PublicProjectMiniSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     project_type_display = serializers.SerializerMethodField()
+    download_count = serializers.SerializerMethodField()
+    view_count = serializers.SerializerMethodField()
 
     class Meta:
         from projects.models import Project
@@ -344,6 +346,12 @@ class PublicProjectMiniSerializer(serializers.ModelSerializer):
 
     def get_project_type_display(self, obj):
         return obj.get_project_type_display()
+
+    def get_download_count(self, obj) -> int:
+        return obj.download_logs.count()
+
+    def get_view_count(self, obj) -> int:
+        return obj.view_logs.count()
 
 
 class PublicUserProfileSerializer(serializers.ModelSerializer):

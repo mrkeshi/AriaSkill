@@ -1,7 +1,6 @@
 <template>
   <section class="my-8">
     <UiCardBlury>
-      <!-- هدر سکشن -->
       <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
         <div class="p-2 bg-classic-gold/20 rounded-lg text-classic-gold">
           <Icon name="mdi:link-box-variant-outline" class="text-2xl" />
@@ -12,7 +11,6 @@
         </div>
       </div>
 
-      <!-- جدول لینک‌ها -->
       <div class="overflow-x-auto rounded-xl border border-white/10">
         <table class="w-full text-right text-sm text-gray-300">
           <thead class="bg-white/10 text-white font-medium uppercase tracking-wider">

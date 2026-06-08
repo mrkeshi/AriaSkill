@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-
+// Card component with a blury background and hover effects
 </script>
 
 <style>

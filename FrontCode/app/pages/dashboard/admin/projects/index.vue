@@ -195,6 +195,7 @@
 </template>
 
 <script setup lang="ts">
+
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 import { deleteAdminProjectService, getAdminProjectsService, updateAdminProjectStatusService } from '~/services/projects/project.Service'
 import { useCustomToastify } from '~/composable/useCustomToasitify'

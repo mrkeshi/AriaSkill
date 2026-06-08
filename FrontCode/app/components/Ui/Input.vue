@@ -22,6 +22,10 @@
 </template>
 
 <script lang="ts" setup>
+
+// Input component integrated with vee-validate for form validation and 
+// error handling, supporting various input types, RTL text, and customizable labels and placeholders
+
 import {useField} from 'vee-validate'
 
 

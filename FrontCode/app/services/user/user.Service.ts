@@ -1,3 +1,5 @@
+// This file defines the services for handling user-related operations in a TypeScript project.
+
 import type { ApiResponse } from "~/models/ApiResponseDTO";
 import type { ActiveUserDTO, AuthUserDTO, ChangePasswordDTO, LoginDTO, RefTokenDTO } from "~/models/User/AuthDTO";
 import type { RegisterDTO } from "~/models/User/AuthDTO";

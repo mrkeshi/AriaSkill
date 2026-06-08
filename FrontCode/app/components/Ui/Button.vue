@@ -47,6 +47,9 @@
 </template>
 
 <script setup lang="ts">
+
+// User Interface Button component with multiple variants and optional icon support
+
 import { computed, resolveComponent } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 

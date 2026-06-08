@@ -5,7 +5,6 @@
            relative overflow-hidden select-none bg-deep-black"
     dir="rtl"
   >
-    <!-- glow backgrounds -->
     <div class="absolute top-0 right-0 w-80 h-80 bg-classic-gold/5 blur-[120px] rounded-full pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-80 h-80 bg-fuchsia-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -64,7 +63,6 @@
         </p>
       </div>
 
-      <!-- story / vision -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
 
         <div

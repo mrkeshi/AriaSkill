@@ -24,7 +24,7 @@
     </div>
   </div>
 </template>
-
+<!-- Simple Card component -->
 <script setup lang="ts">
 
 

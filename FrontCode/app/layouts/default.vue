@@ -1,3 +1,4 @@
+<!-- Default Layout -->
 <template>
   <div>
     <header-the-header></header-the-header>

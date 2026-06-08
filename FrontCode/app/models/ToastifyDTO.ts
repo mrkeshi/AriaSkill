@@ -1,3 +1,4 @@
+//  This file defines the types for the Toastify data transfer objects (DTOs) in a TypeScript project.
 export type ToastParams = {
   title: string
   message: string

@@ -1,3 +1,4 @@
+// This file defines the data transfer objects (DTOs) for comments in the application. It includes the structure of a comment, the structure of a comment management DTO, and the structure of responses for listing comments and project comments.
 export interface SendCommentDTO {
   project: number
   parent: number | null

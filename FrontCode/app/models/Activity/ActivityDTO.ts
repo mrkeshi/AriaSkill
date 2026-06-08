@@ -1,3 +1,4 @@
+// This file defines the data transfer objects (DTOs) for activities in the application. It includes the types of activities, the structure of an activity, and the structure of responses for listing activities, counting unseen activities, and marking all activities as seen.
 export type ActivityType =
   | 'login_success'
   | 'login_failed'

@@ -1,3 +1,5 @@
+// This file defines the types for the public user profile data transfer objects (DTOs) in a TypeScript project.
+
 import type { SkillDTO } from '../Skill/SkillDTO'
 
 export interface PublicProjectMiniDTO {

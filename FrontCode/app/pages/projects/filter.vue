@@ -1,7 +1,6 @@
 <template>
   <div class="grid grid-cols-1 min-h-screen lg:grid-cols-3 gap-8 py-8 lg:py-24">
 
-    <!-- ستون فیلترها -->
     <div class="space-y-5">
       <ProjectFiltersBoxResult
         :filters="filters"
@@ -37,7 +36,7 @@
       </div>
     </div>
 
-    <!-- ستون نتایج -->
+
     <div class="lg:col-span-2">
       <div class="flex flex-col space-y-0">
         <ProjectFiltersSort :filters="filters" @sort-changed="handleSortChange" />
@@ -68,32 +67,35 @@ const { filters, applyFilter, resetSearch, resetAll, toggleTechnology, toggleYea
 const route = useRoute()
 const currentPage = computed(() => Number(route.query.page) || 1)
 
-// ساخت کلید واچ از همه query params
 const queryKey = computed(() => JSON.stringify(route.query))
 
 const { data, pending, refresh } = await useAsyncData(
   'public-projects-filtered',
-  () =>
-    getPublicProjectsService(currentPage.value, 6, {
-      q: filters.q || undefined,
-      technology: filters.technology as string[],
-      years: filters.years as number[],
-      category: filters.category as any,
-      sort: filters.sort,
-    }),
+  () => {
+    const q = route.query
+    const techQuery = q.technology as string | undefined
+    const yearQuery = q.year as string | undefined
+    const catQuery = q.category as string | undefined
+
+    return getPublicProjectsService(currentPage.value, 6, {
+      q: (q.q as string) || undefined,
+      technology: techQuery ? techQuery.split(',').filter(Boolean) : [],
+      years: yearQuery ? yearQuery.split(',').map(Number).filter(Boolean) : [],
+      category: catQuery ? (catQuery.split(',').filter(Boolean) as any) : [],
+      sort: (q.sort as any) || 'new',
+    })
+  },
   { watch: [queryKey] }
 )
 
 const projects = computed(() => data.value?.data?.results ?? [])
 const totalPages = computed(() => Math.ceil((data.value?.data?.count ?? 0) / 6))
 
-// اعمال فیلتر و رفرش
 const handleApplyFilter = () => {
   applyFilter()
   nextTick(() => refresh())
 }
 
-// هنگام تغییر مرتب‌سازی
 const handleSortChange = () => {
   applyFilter()
   nextTick(() => refresh())

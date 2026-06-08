@@ -1,3 +1,4 @@
+<!-- Dashboard Activities Page -->
 <template>
   <UiCardBlury>
     <Confirm
@@ -141,6 +142,8 @@
 </template>
 
 <script setup lang="ts">
+// This page is under development and will be available soon. In the meantime,
+// you can explore other sections of the dashboard or check back later for updates.
 import type { ActivityDTO, ActivityType } from '~/models/Activity/ActivityDTO'
 import {
   deleteActivityService,

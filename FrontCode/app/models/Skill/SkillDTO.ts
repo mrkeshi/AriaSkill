@@ -1,3 +1,4 @@
+// This file defines the types for the Skill data transfer objects (DTOs) in a TypeScript project.
 export  interface SkillSDTO{
     results:skillItem[]
     count:number

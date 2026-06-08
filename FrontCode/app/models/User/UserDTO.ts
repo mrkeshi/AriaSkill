@@ -1,4 +1,4 @@
-
+// This file defines the types for the User data transfer objects (DTOs) in a TypeScript project.
 export interface UserDTO{
     username:string,
     email:string,
