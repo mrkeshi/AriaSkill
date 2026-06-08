@@ -73,7 +73,7 @@
 
 <script lang="ts" setup>
 </script>
-
+<!-- Hero Explore Section -->
 <style scoped>
 
 .scrollbar-none::-webkit-scrollbar {

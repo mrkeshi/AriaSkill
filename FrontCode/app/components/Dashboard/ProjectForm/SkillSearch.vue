@@ -76,9 +76,7 @@
               class="h-6 w-6 object-contain flex-shrink-0 transition-transform duration-300 group-hover:scale-110" 
               :alt="skill.name"
             >
-            
             <span class="whitespace-nowrap text-sm">{{ skill.name }}</span>
-            
             <Icon 
               v-if="isSelected(skill.id)" 
               name="mdi:check" 
@@ -93,6 +91,16 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * Dashboard/ProjectFormSkillSearch.vue
+ * ─────────────────────────────────────────────────────────────────────────────
+ * A responsive, real-time searchable skill picker component.
+ * Features asynchronous data fetching with integrated debounce mechanism to 
+ * limit unnecessary API load during typing.
+ * Includes explicit separation between active chips and selectable options list.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 import { ref, watch, onBeforeUnmount } from 'vue'
 import type { skillItem } from '~/models/Skill/SkillDTO'
 import { getSkillsService } from '~/services/skills/skills.Service'
@@ -109,10 +117,14 @@ defineEmits<{
 const searchQuery = ref('')
 const skills = ref<skillItem[]>([])
 const loading = ref(false)
+
+/** Holds reference to active timeout window for query debouncing */
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
+/** Checks if a specific skill is currently present in the selection list */
 const isSelected = (id: number) => props.selectedSkills.some(s => s.id === id)
 
+/** Performs backend search request using current search query state */
 const loadSkills = async () => {
   loading.value = true
   try {
@@ -123,11 +135,13 @@ const loadSkills = async () => {
   }
 }
 
+/** Watches search updates; resets timer and executes callback after 280ms threshold */
 watch(searchQuery, () => {
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(loadSkills, 280)
 }, { immediate: true })
 
+/** Clears remaining scheduled timer allocations prior to teardown */
 onBeforeUnmount(() => {
   if (debounceTimer) clearTimeout(debounceTimer)
 })

@@ -1,3 +1,7 @@
+/**
+ * Generates structured SEO configurations mapping standard HTML tags, Open Graph (OG), 
+ * Twitter Cards, and canonical linkage definitions for high-performance indexing.
+ */
 export function generateSeoMeta({
   title,
   description,

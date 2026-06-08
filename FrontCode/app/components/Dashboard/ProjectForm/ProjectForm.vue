@@ -1,9 +1,6 @@
 <template>
   <form dir="rtl" class="grid grid-cols-1 lg:grid-cols-3 gap-6" @submit.prevent="submit">
-
     <div class="lg:col-span-2 space-y-5">
-
-
       <UiInput
         name="title"
         label="عنوان پروژه"
@@ -15,33 +12,29 @@
       />
 
       <div class="space-y-2">
-  <label class="block text-sm font-medium mb-2 text-bone-white">نوع پروژه</label>
-
-  <div class="relative">
-    <select
-      v-model="form.project_type"
-      required
-      class="w-full px-4 py-3 pl-10 rounded-lg border border-gray-300 focus:ring-1 focus:ring-classic-gold focus:border-classic-gold outline-none transition-all bg-transparent text-white [&>option]:bg-slate-900 appearance-none"
-    >
-      <option value="" disabled>نوع پروژه را انتخاب کنید</option>
-      <option v-for="type in PROJECT_TYPES" :key="type.value" :value="type.value">
-        {{ type.label }}
-      </option>
-    </select>
-
-    <svg
-      class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-    </svg>
-  </div>
-</div>
-
-
+        <label class="block text-sm font-medium mb-2 text-bone-white">نوع پروژه</label>
+        <div class="relative">
+          <select
+            v-model="form.project_type"
+            required
+            class="w-full px-4 py-3 pl-10 rounded-lg border border-gray-300 focus:ring-1 focus:ring-classic-gold focus:border-classic-gold outline-none transition-all bg-transparent text-white [&>option]:bg-slate-900 appearance-none"
+          >
+            <option value="" disabled>نوع پروژه را انتخاب کنید</option>
+            <option v-for="type in PROJECT_TYPES" :key="type.value" :value="type.value">
+              {{ type.label }}
+            </option>
+          </select>
+          <svg
+            class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
 
       <UiTextarea
         name="description"
@@ -61,7 +54,6 @@
     </div>
 
     <div class="space-y-5">
-
       <DashboardProjectFormCoverImagePicker
         :initial-url="initialImageUrl"
         @change="form.image = $event"
@@ -90,6 +82,20 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * Dashboard/ProjectForm.vue
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Form component used for creating and editing platform projects.
+ * Supports handling mixed payload data including plain input values, multi-select
+ * relational skills, and raw binary streams (image files and archives).
+ * * Flow:
+ * 1. Hydrates via `initialProject` prop for edit mode (maps backend fields & media assets).
+ * 2. Uses reactive tracking for user modifications across generic custom UI inputs.
+ * 3. Transforms standard JSON fields and file blobs into a unified `FormData` payload.
+ * 4. Shuts down native form submission and bubbles data to parent view container.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 import { reactive, ref, watch } from 'vue'
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 import type { skillItem } from '~/models/Skill/SkillDTO'
@@ -110,19 +116,19 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
-// ─── consts ────────────────────────────────────────────────────
+/** Fixed domain categorisation options for platform projects */
 const PROJECT_TYPES = [
-  { value: 'UI/UX',        label: 'طراحی UI/UX' },
-  { value: 'Frontend',     label: 'توسعه فرانت‌اند' },
-  { value: 'Backend',      label: 'توسعه بک‌اند' },
-  { value: 'Mobile',       label: 'توسعه موبایل' },
-  { value: 'AI_Data',      label: 'هوش مصنوعی و داده' },
-  { value: 'DevOps_Cloud', label: 'DevOps و فضای ابری' },
-  { value: 'Game',         label: 'توسعه بازی' },
-  { value: 'Cyber_Sec',    label: 'امنیت سایبری' },
+  { value: 'UI/UX',         label: 'طراحی UI/UX' },
+  { value: 'Frontend',      label: 'توسعه فرانت‌اند' },
+  { value: 'Backend',       label: 'توسعه بک‌اند' },
+  { value: 'Mobile',        label: 'توسعه موبایل' },
+  { value: 'AI_Data',       label: 'هوش مصنوعی و داده' },
+  { value: 'DevOps_Cloud',  label: 'DevOps و فضای ابری' },
+  { value: 'Game',          label: 'توسعه بازی' },
+  { value: 'Cyber_Sec',     label: 'امنیت سایبری' },
 ]
 
-// ─── state ──────────────────────────────────────────────────────
+/** Holds primary text inputs and raw file handles */
 const form = reactive({
   title: '',
   project_type: '',
@@ -134,7 +140,7 @@ const form = reactive({
 const selectedSkills = ref<skillItem[]>([])
 const initialImageUrl = ref('')
 
-// ─── helpers ────────────────────────────────────────────────────
+/** Toggles skill badge selection state inside array */
 const toggleSkill = (skill: skillItem) => {
   const exists = selectedSkills.value.some(s => s.id === skill.id)
   selectedSkills.value = exists
@@ -142,6 +148,7 @@ const toggleSkill = (skill: skillItem) => {
     : [...selectedSkills.value, skill]
 }
 
+/** Compiles reactive tracking state into multipart/form-data for API submission */
 const buildFormData = (): FormData => {
   const fd = new FormData()
   fd.append('title', form.title)
@@ -153,6 +160,7 @@ const buildFormData = (): FormData => {
   return fd
 }
 
+/** Maps existing project state to form variables when editing */
 const hydrate = (project?: ProjectDTO | null) => {
   form.title        = project?.title        ?? ''
   form.project_type = project?.project_type ?? ''
@@ -165,11 +173,6 @@ const hydrate = (project?: ProjectDTO | null) => {
 
 const submit = () => emit('submit', buildFormData())
 
-// ─── watchers ───────────────────────────────────────────────────
+/** Watcher triggers immediate reactive form population on input update */
 watch(() => props.initialProject, hydrate, { immediate: true })
-
-
-
 </script>
-
-

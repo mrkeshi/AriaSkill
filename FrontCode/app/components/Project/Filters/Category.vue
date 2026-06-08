@@ -16,6 +16,11 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * - Implements a reactive, accordion-isolated project category filter interface.
+ * - Bridges multi-selection states directly to parent component orchestration methods.
+ * - Handles resilient array check routines preventing template initialization layout breaks.
+ */
 import type { ProjectCategory } from '~/models/Project/FilterProjectDTO';
 const categories =ref<ProjectCategory[]>([
   "UI/UX Design",

@@ -1,7 +1,7 @@
 
 import * as Yup from 'yup';
 import { createFileSchema } from '../createFileSchema ';
-
+// Skill Schema
 export const SkillsSchema = Yup.object({
   icon: createFileSchema({
     required: true,

@@ -12,8 +12,10 @@
     </ul>
   </div>
 </template>
+<!-- footer component -->
 
 <script setup lang="ts">
+
 defineProps<{
   title: string
   color: string

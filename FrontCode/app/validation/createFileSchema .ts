@@ -1,3 +1,11 @@
+/** 
+* Utilities/FileValidationSchema.ts
+ * ─────────────────────────────────────────────────────────────────────────────
+ * - Dynamic factory function that generates a customized Yup validation schema 
+ * for generic File objects.
+ * - Enforces upper bound asset size constraints dynamically calculated in megabytes.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 import * as yup from 'yup'
 
 interface FileOptions {

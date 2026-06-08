@@ -28,6 +28,7 @@
 
   </div>
 </template>
+<!-- footer component -->
 
 <script setup lang="ts">
 

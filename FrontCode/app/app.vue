@@ -1,7 +1,5 @@
 <template>
-
 <div>
-
 
  <NuxtLoadingIndicator color="#d4af37" :height="5" :throttle="0" />
 

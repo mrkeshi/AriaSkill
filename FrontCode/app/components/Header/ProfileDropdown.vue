@@ -130,6 +130,11 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * - Implements a reactive glassmorphic profile context dropdown panel.
+ * - Manages contextual template toggles synchronized with global authentication states.
+ * - Integrates short-circuiting triggers mapped to centralized session disposal popups.
+ */
 import { ref } from 'vue'
 
 const auth = useAuthStore()

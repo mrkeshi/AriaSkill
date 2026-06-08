@@ -30,8 +30,9 @@
 
       </ui-card-blury>
 </template>
-
+<!-- Download Box  Component -->
 <script lang="ts" setup>
+
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 
 defineProps<{

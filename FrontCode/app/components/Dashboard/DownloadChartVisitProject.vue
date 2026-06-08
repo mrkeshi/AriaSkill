@@ -74,6 +74,12 @@ VUE
 </template>
  
 <script setup lang="ts">
+/**
+ * - Dual-series neon area chart for tracking project views and downloads.
+ * - Automatically converts Gregorian timeline dates into short Jalali labels.
+ * - Features a cyberpunk dark theme layout with a customized HTML tooltip.
+ */
+
 import { ref, computed, onMounted } from 'vue'
 import { getDashboardChartService } from '~/services/projects/chart.Service'
 import { toPersianNumerals, toJalali } from '~/utilities/dateHelpers'
@@ -203,7 +209,7 @@ const chartOptions = computed(() => ({
   },
 }))
  
-// ── Fetch ──────────────────────────────────────────────────────────────────
+
 onMounted(async () => {
   try {
     const res = await getDashboardChartService()
@@ -225,8 +231,7 @@ onMounted(async () => {
 </script>
  
 <style scoped>
-.text-classic-gold  { color: #d4af37; }
-.bg-classic-gold    { background-color: #d4af37; }
+
 .from-classic-gold  {
   --tw-gradient-from: #d4af37 var(--tw-gradient-from-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(212 175 55 / 0));

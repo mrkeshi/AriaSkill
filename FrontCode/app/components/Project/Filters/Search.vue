@@ -28,6 +28,11 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * - Implements a reactive search query formulation input field wrapped in an accordion card.
+ * - Synchronizes active routing criteria metrics directly via conditional micro-macro bindings.
+ * - Leverages contextual ancestor hover group chains triggers maximizing tactile visual micro-interactions.
+ */
 const {filters,applyFilter} = defineProps<{
   filters: { q: string | undefined  }
   applyFilter: () => void

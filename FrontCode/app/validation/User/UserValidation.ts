@@ -1,6 +1,6 @@
 
 import * as Yup from 'yup'
-
+// User Schema For Validations
 
 export const LoginSchema = Yup.object().shape({
   identifier: Yup.string().required("وارد کردن  نام کاربری یا ایمیل ضروری هست."),

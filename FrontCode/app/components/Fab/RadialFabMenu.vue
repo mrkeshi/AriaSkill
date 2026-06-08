@@ -48,6 +48,11 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * - Ultra-sleek mobile-only Floating Action Button (FAB) navigation bar component.
+ * - Drives responsive dynamic drawer ribbons engineered via high-performance clip-path keyframes.
+ * - Implements strict structural layout isolations locked specifically below medium desktop viewports.
+ */
 import { ref, computed, h, resolveComponent, onBeforeUnmount } from 'vue'
 
 const open = ref(false)

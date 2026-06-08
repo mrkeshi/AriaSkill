@@ -23,6 +23,16 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * error.vue (Custom Nuxt 3 Error Layout)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Global error-handling page for managing application-wide HTTP exceptions.
+ * - Categorises error status codes (400, 403, 404, 500) natively via props.
+ * - Computes dynamic localized Farsi warning content based on the error code.
+ * - Prevents potential build breakages using safe runtime optional chaining (?.).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 const props = defineProps<{ error?: { statusCode?: number; message?: string } }>()
 
 const title = computed(() => {

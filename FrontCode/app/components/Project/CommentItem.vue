@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts" setup>
+//  Comment item
 import type { CommentDTO } from '~/models/Comment/SendCommentDTO'
 import { toJalaliLong } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'

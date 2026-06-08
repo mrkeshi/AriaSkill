@@ -30,8 +30,6 @@
           </div>
 
      
-
-
           <UiButton :disabled="loading" variant="gold" type="submit" full class="mt-4 text-md">
             ورود به حساب
           </UiButton>
@@ -89,10 +87,8 @@ const form:LoginDTO = reactive({
 })
 
 
-
-
 const sendrequest = (_: unknown, { resetForm }: any) => {
-  loading.value = true
+    loading.value = true
     authStore.login(form).finally(()=>{
 
     loading.value = false

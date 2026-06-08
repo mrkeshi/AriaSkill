@@ -76,7 +76,7 @@
     </div>
   </section>
 </template>
-
+<!-- Hero Explore Stats Section -->
 <script lang="ts" setup>
 </script>
 

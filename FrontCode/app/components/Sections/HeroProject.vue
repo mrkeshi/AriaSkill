@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 </script>
-
+<!-- Hero Project Section -->
 <style scoped>
 .dir-rtl {
   direction: rtl;

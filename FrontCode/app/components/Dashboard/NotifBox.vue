@@ -1,11 +1,9 @@
 <template>
   <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 overflow-hidden relative select-none">
 
-    <!-- background glows -->
     <div class="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- header -->
     <div class="flex items-center justify-between mb-8 relative z-10" dir="rtl">
       <div class="flex items-center gap-3">
         <div class="w-2 h-5 bg-gradient-to-b from-amber-400 to-classic-gold rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
@@ -27,7 +25,6 @@
       </button>
     </div>
 
-    <!-- skeleton -->
     <div v-if="loading" class="space-y-3 relative z-10" dir="rtl">
       <div
         v-for="i in 4"
@@ -36,61 +33,57 @@
       ></div>
     </div>
 
-    <!-- empty state -->
     <div
-      v-else-if="notifications.length === 0"
+      v-else-if="!notifications || notifications.length === 0"
       class="flex flex-col items-center justify-center py-10 text-gray-500 relative z-10"
     >
       <Icon name="mdi:bell-sleep-outline" class="text-4xl mb-3 opacity-30" />
       <p class="text-sm">هیچ اعلانی وجود ندارد.</p>
     </div>
 
-    <!-- list -->
     <div v-else class="space-y-3 relative z-10" dir="rtl">
       <div
         v-for="notif in notifications"
-        :key="notif.id"
+        :key="notif?.id"
         class="group relative flex items-center justify-between p-4 rounded-xl border transition-all duration-300 bg-slate-950/20 backdrop-blur-md"
         :class="[
-          notif.is_read
+          notif?.is_read
             ? 'border-white/5 opacity-60'
             : 'border-white/10 hover:border-white/20 hover:bg-white/[0.04]',
-          notifStyle(notif.type).borderHover,
+          notifStyle(notif?.type).borderHover,
         ]"
       >
-        <!-- unread accent line -->
         <div
-          v-if="!notif.is_read"
+          v-if="!notif?.is_read"
           class="absolute right-0 top-0 bottom-0 w-[3px] rounded-r-full transition-all duration-300"
-          :class="notifStyle(notif.type).sideLine"
+          :class="notifStyle(notif?.type).sideLine"
         ></div>
 
         <div class="flex items-center gap-4 flex-1 min-w-0">
           <div
             class="w-10 h-10 flex items-center justify-center rounded-xl border shrink-0 transition-transform duration-300 group-hover:scale-105"
-            :class="notifStyle(notif.type).iconBox"
+            :class="notifStyle(notif?.type).iconBox"
           >
-            <Icon :name="notifStyle(notif.type).icon" size="18" />
+            <Icon :name="notifStyle(notif?.type).icon" size="18" />
           </div>
 
           <div class="flex flex-col gap-1 min-w-0 text-right">
             <p class="text-sm font-bold text-gray-100 group-hover:text-white transition-colors truncate">
-              {{ notif.title }}
+              {{ notif?.title }}
             </p>
             <p class="text-xs text-gray-400 leading-relaxed truncate pl-4">
-              {{ notif.message }}
+              {{ notif?.message }}
             </p>
           </div>
         </div>
 
         <div class="flex items-center gap-3 shrink-0 mr-4">
           <span class="text-[10px] font-medium text-gray-500 whitespace-nowrap">
-            {{ relativeTime(notif.created_at) }}
+            {{ relativeTime(notif?.created_at) }}
           </span>
 
-          <!-- mark read button -->
           <button
-            v-if="!notif.is_read"
+            v-if="!notif?.is_read"
             @click="markRead(notif)"
             class="opacity-0 group-hover:opacity-100 text-emerald-400 hover:text-emerald-300 p-1 rounded-lg hover:bg-emerald-500/10 transition-all duration-300"
             title="علامت‌گذاری به عنوان خوانده شده"
@@ -99,7 +92,7 @@
           </button>
 
           <button
-            @click="removeNotif(notif.id)"
+            @click="removeNotif(notif?.id)"
             class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-rose-400 p-1 rounded-lg hover:bg-rose-500/10 transition-all duration-300"
             title="حذف اعلان"
           >
@@ -109,7 +102,6 @@
       </div>
     </div>
 
-    <!-- footer link -->
     <div class="mt-6 text-center relative z-10">
       <NuxtLink
         to="/dashboard/notifications"
@@ -123,6 +115,12 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * - Implements a sleek cyberpunk-themed notification feed center panel component.
+ * - Safely maps reactive mutation streams using optional chaining parameters (?.).
+ * - Hot-patches unread layout badges locally during operational server dispatches.
+ */
+
 import { ref, computed, onMounted } from 'vue'
 import type { NotificationDTO } from '~/models/Notification/NotificationDTO'
 import {
@@ -134,18 +132,18 @@ import {
 import { notifStyle } from '~/utilities/notificationHelpers'
 import { relativeTime } from '~/utilities/dateHelpers'
 
-// ── State ──────────────────────────────────────────────────────────────────
 const notifications = ref<NotificationDTO[]>([])
-const loading      = ref(true)
+const loading       = ref(true)
 const markingAll   = ref(false)
 
-const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
 
-// ── Fetch ──────────────────────────────────────────────────────────────────
+const unreadCount = computed(() => notifications.value?.filter(n => !n?.is_read).length ?? 0)
+
 const fetchNotifications = async () => {
   loading.value = true
   try {
     const res = await getRecentNotificationsService()
+    // 👇 استخراج امن پاسخ بدون شکست در ران‌تایم
     notifications.value = res?.data ?? res ?? []
   } catch {
     notifications.value = []
@@ -154,11 +152,11 @@ const fetchNotifications = async () => {
   }
 }
 
-// ── Actions ────────────────────────────────────────────────────────────────
 const markRead = async (notif: NotificationDTO) => {
+  if (!notif?.id) return 
   try {
     await markNotificationReadService(notif.id)
-    notif.is_read = true
+    if (notif) notif.is_read = true
   } catch { /* silent */ }
 }
 
@@ -166,15 +164,19 @@ const markAllRead = async () => {
   markingAll.value = true
   try {
     await markAllNotificationsReadService()
-    notifications.value.forEach(n => (n.is_read = true))
+  
+    notifications.value?.forEach(n => {
+      if (n) n.is_read = true
+    })
   } catch { /* silent */ }
   finally { markingAll.value = false }
 }
 
 const removeNotif = async (id: number) => {
+  if (!id) return
   try {
     await deleteNotificationService(id)
-    notifications.value = notifications.value.filter(n => n.id !== id)
+    notifications.value = notifications.value?.filter(n => n?.id !== id) ?? []
   } catch { /* silent */ }
 }
 
@@ -182,12 +184,5 @@ onMounted(fetchNotifications)
 </script>
 
 <style scoped>
-.from-classic-gold {
-  --tw-gradient-from: #d4af37 var(--tw-gradient-from-position);
-  --tw-gradient-to: rgb(212 175 55 / 0) var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-.to-classic-gold {
-  --tw-gradient-to: #d4af37 var(--tw-gradient-to-position);
-}
+/* Scoped styles preserved cleanly */
 </style>

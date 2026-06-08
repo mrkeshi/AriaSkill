@@ -1,28 +1,33 @@
-import { FetchError } from "ofetch";
 import type { NitroFetchOptions } from "nitropack";
 import type { ApiResponse } from "~/models/ApiResponseDTO";
-import { baseURL as BASE_URL } from "./ApiConfig";
 import { useCustomToastify } from "~/composable/useCustomToasitify";
 import { useAuthStore } from "~/stores/authStore";
 
-
 const { showError } = useCustomToastify();
 
+/**
+ * High-performance global HTTP client engine wrapped around Nuxt $fetch.
+ * Automatically handles JWT Authorization states, reactive token refreshing on 401 statuses,
+ * and normalizes disparate multi-type validation error packets into safe user toast notifications.
+ */
 export async function FetchX<T>(
   url: string,
   config: NitroFetchOptions<string> = {}
 ): Promise<ApiResponse<T>> {
-const nuxtconfug = useRuntimeConfig()
+  const nuxtConfig = useRuntimeConfig()
   const authStore = useAuthStore();
   const accessTokenCookie = useCookie<string | null>('accessToken');
+
+  // ── Configure Base Fetch Target Environment ──────────────────────────────
   config = {
-    baseURL: nuxtconfug.public.baseUrl as string,
+    baseURL: nuxtConfig.public.baseUrl as string,
     ...config,
     headers: {
       ...(config.headers || {})
     }
   };
 
+  // ── Inject Authentication Headers If Present ─────────────────────────────
   if (accessTokenCookie.value) {
     (config.headers as Record<string, string>)["Authorization"] = `JWT ${accessTokenCookie.value}`;
   }
@@ -31,6 +36,7 @@ const nuxtconfug = useRuntimeConfig()
     return await $fetch<ApiResponse<T>>(url, config);
   } catch (e: any) {
     
+    // ── Handle Token Expiration Interception (401 Unauthorized) ──────────────
     if (e.response?.status === 401) {
       const isRefreshed = await authStore.tryRefreshToken();
       
@@ -42,7 +48,7 @@ const nuxtconfug = useRuntimeConfig()
       }
     }
 
-
+    // ── Dynamic Server Error Normalization & Message Parsing ─────────────────
     const errors = e?.data?.errors;
 
     if (!errors) {

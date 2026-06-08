@@ -61,6 +61,12 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * - Glassmorphism dashboard layout header with real-time reactive scheduling.
+ * - Dynamically updates time-of-day Persian greetings every 60 seconds.
+ * - Safely handles user avatar display with a smart, fallback initial indicator.
+ */
+
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { getIranGreeting } from '~/utilities/dateHelpers'
 

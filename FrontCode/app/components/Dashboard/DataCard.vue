@@ -18,13 +18,11 @@
         class="group relative bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex items-center gap-5 transition-all duration-500 hover:-translate-y-1.5 hover:bg-white/[0.04] overflow-hidden"
         :class="stat.shadowColor"
       >
-        <!-- glow blob -->
         <div
           class="absolute -right-10 -bottom-10 w-28 h-28 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none"
           :class="stat.bgGlow"
         ></div>
 
-        <!-- icon -->
         <div
           class="flex items-center justify-center w-14 h-14 rounded-2xl border transition-all duration-500 group-hover:scale-110"
           :class="stat.iconStyle"
@@ -32,11 +30,10 @@
           <Icon :name="stat.icon" size="28" />
         </div>
 
-        <!-- value + label -->
         <div class="flex flex-col gap-1 flex-1 min-w-0 text-right">
 
-          <!-- skeleton while loading -->
           <div v-if="loading" class="h-7 w-16 bg-white/10 rounded-lg animate-pulse mb-1"></div>
+          
           <p v-else class="text-2xl font-black text-white tracking-wider ">
             {{ toPersianNumerals(stat.value) }}
           </p>
@@ -46,7 +43,6 @@
           </p>
         </div>
 
-        <!-- accent line -->
         <div
           class="absolute right-0 top-1/4 bottom-1/4 w-[2px] rounded-r-full opacity-40 group-hover:opacity-100 transition-opacity duration-500"
           :class="stat.lineStyle"
@@ -58,14 +54,23 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * Dashboard/StatsGrid.vue
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Renders the high-level system analytics grid for the platform dashboard.
+ * Refactored with TypeScript Optional Chaining (?.) to eliminate potential
+ * "Object is possibly undefined" compile-time exceptions on service hydration.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 import { ref, onMounted, watch } from 'vue'
 import { getDashboardStatsService } from '~/services/notification/notification.Service'
 import { toPersianNumerals } from '~/utilities/dateHelpers'
 import type { StatCard } from '~/models/Dashboard/dashboardTypes'
 
-// ── Reactive state ─────────────────────────────────────────────────────────
 const loading = ref(true)
 
+/** Main array containing unique stylistic definitions and counters for system metrics */
 const stats = ref<StatCard[]>([
   {
     id: 1,
@@ -109,18 +114,19 @@ const stats = ref<StatCard[]>([
   },
 ])
 
-// ── Fetch stats ────────────────────────────────────────────────────────────
+/** Fetches latest aggregate system statistics from endpoint and populates the schema */
 const fetchStats = async () => {
   loading.value = true
   try {
     const res = await getDashboardStatsService()
     const data = res?.data ?? res
-    stats.value[0].value = data.total_projects      ?? 0
-    stats.value[1].value = data.total_downloads     ?? 0
-    stats.value[2].value = data.total_comments      ?? 0
-    stats.value[3].value = data.unread_notifications ?? 0
-  } catch {
-    // اگر API خطا داد مقادیر 0 نمایش داده می‌شه
+    
+    if (stats.value[0]) stats.value[0].value = data?.total_projects       ?? 0
+    if (stats.value[1]) stats.value[1].value = data?.total_downloads      ?? 0
+    if (stats.value[2]) stats.value[2].value = data?.total_comments       ?? 0
+    if (stats.value[3]) stats.value[3].value = data?.unread_notifications ?? 0
+  } catch (err) {
+    console.error('[StatsGrid]', err)
   } finally {
     loading.value = false
   }
@@ -128,12 +134,15 @@ const fetchStats = async () => {
 
 onMounted(fetchStats)
 
-// ── Sync unread_notifications با notificationStore ──────────────────────
+// ── Sync unread_notifications with notificationStore ──────────────────────
 const notifStore = useNotificationStore()
 
-// وقتی unreadCount در store عوض شد، کارت رو هم آپدیت کن
+/** Observes centralized store counter state mutations to hot-patch slot index [3] instantly */
 watch(
-  () => notifStore.unreadCount,
-  (val) => { stats.value[3].value = val },
+  () => notifStore?.unreadCount, // 
+  (val) => { 
+    if (stats.value[3]) stats.value[3].value = val ?? 0 
+  },
 )
 </script>
+

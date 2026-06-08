@@ -16,8 +16,9 @@
         </div>
     </UiCardBlury>
 </template>
-
+<!-- detail project component -->
 <script lang="ts" setup>
+
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 import { toJalaliLong } from '~/utilities/dateHelpers'
 

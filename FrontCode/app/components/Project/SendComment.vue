@@ -30,7 +30,7 @@
     </template>
   </UiCardBlury>
 </template>
-
+<!-- send Component -->
 <script lang="ts" setup>
 import type { SendCommentDTO } from '~/models/Comment/SendCommentDTO'
 import { SendCommentSchema } from '~/validation/Comment/SendComment'

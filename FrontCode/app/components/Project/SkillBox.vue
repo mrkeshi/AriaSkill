@@ -18,7 +18,7 @@
 
         </ui-card-blury>
 </template>
-
+<!-- Skill Box Component -->
 <script lang="ts" setup>
 import type { SkillDTO } from '~/models/Skill/SkillDTO'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
