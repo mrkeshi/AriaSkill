@@ -50,15 +50,7 @@ class Project(models.Model):
 
     likes_count = models.PositiveIntegerField(default=0, editable=False)
 
-    download_count = models.PositiveIntegerField(default=0, editable=False)
-
-    view_count = models.PositiveIntegerField(default=0, editable=False)
-
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-
-    last_download = models.DateTimeField(
-        null=True, blank=True, editable=False
-    )
 
     image = models.ImageField(upload_to='projects_images/', blank=True, null=True)
 

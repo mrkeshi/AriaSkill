@@ -134,14 +134,18 @@ class PublicProjectListView(generics.ListAPIView):
 
         # مرتب‌سازی
         sort = self.request.query_params.get('sort', 'new')
-        sort_map = {
-            'new': '-created_at',
-            'old': 'created_at',
-            'popular': '-likes_count',
-            'downloads': '-download_count',
-        }
-        ordering = sort_map.get(sort, '-created_at')
-        queryset = queryset.order_by(ordering)
+        if sort == 'downloads':
+            queryset = queryset.annotate(
+                dl_count=models.Count('download_logs')
+            ).order_by('-dl_count')
+        else:
+            sort_map = {
+                'new': '-created_at',
+                'old': 'created_at',
+                'popular': '-likes_count',
+            }
+            ordering = sort_map.get(sort, '-created_at')
+            queryset = queryset.order_by(ordering)
 
         return queryset
 
@@ -236,8 +240,7 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         project = self.get_object()
-        Project.objects.filter(pk=project.pk).update(view_count=models.F('view_count') + 1)
-        project.refresh_from_db(fields=['view_count'])
+        ActivityService.project_viewed(project=project, request=request)
         serializer = self.get_serializer(project)
         return Response(serializer.data)
 
@@ -349,19 +352,19 @@ class ProjectDownloadView(generics.GenericAPIView):
         tags=["Projects"]
     )
     def post(self, request, *args, **kwargs):
-        updated = Project.objects.filter(slug=self.kwargs['slug']).update(download_count=models.F('download_count') + 1,
-                                                                          last_download=timezone.now())
-        if updated == 0:
+        try:
+            project = self.get_object()
+        except Exception:
             return Response({"detail": "Not found this project"}, status=status.HTTP_404_NOT_FOUND)
 
-        project = self.get_object()
         project_documentation_downloaded.send(
             sender=project.__class__,
             user=request.user,
             project=project,
             request=request,
         )
-        serializer = self.get_serializer({'download_count': project.download_count})
+        download_count = project.download_logs.count()
+        serializer = self.get_serializer({'download_count': download_count})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -568,7 +571,8 @@ class DashboardChartView(APIView):
     def get(self, request):
         from django.db.models import Sum
         from django.db.models.functions import TruncDate
-        from datetime import date, timedelta
+        from datetime import timedelta
+        from django.utils import timezone
 
         user = request.user
 
@@ -578,17 +582,12 @@ class DashboardChartView(APIView):
             return Response({"days": [], "views": [], "downloads": []})
 
         MAX_DAYS = 20
-        today = date.today()
+        today = timezone.localdate()  # تاریخ امروز بر اساس TIME_ZONE سرور (Asia/Tehran)
         earliest_date = today - timedelta(days=MAX_DAYS - 1)
 
-        from activity.models import Activity, ActivityType
+        from activity.models import ProjectDownloadLog, ProjectViewLog
 
         # ── Downloads per day ──────────────────────────────────────────────────
-        # دانلودهایی که روی پروژه‌های این یوزر انجام شده (توسط هر کسی)
-        # قبلاً: filter(user=user, ...)       ← دانلودهای خود یوزر ✗
-        # الان:  filter(related_project__user=user, ...) ← دانلودهای پروژه‌هاش ✓
-        from activity.models import ProjectDownloadLog
-
         download_qs = (
             ProjectDownloadLog.objects
             .filter(
@@ -601,60 +600,32 @@ class DashboardChartView(APIView):
             .order_by('day')
         )
 
-        engagement_qs = (
-            Activity.objects
+        # ── Views per day ──────────────────────────────────────────────────────
+        view_qs = (
+            ProjectViewLog.objects
             .filter(
-                related_project__user=user,
-                type__in=[
-                    ActivityType.PROJECT_DOCUMENTATION_DOWNLOADED,
-                    ActivityType.EXTERNAL_PROJECT_COMMENT_CREATED,
-                ],
-                created_at__date__gte=earliest_date,
-                deleted_at__isnull=True,
+                project__user=user,
+                viewed_at__date__gte=earliest_date,
             )
-            .annotate(day=TruncDate('created_at'))
+            .annotate(day=TruncDate('viewed_at'))
             .values('day')
             .annotate(count=models.Count('id'))
             .order_by('day')
         )
 
-
-        total_views = (
-            Project.objects
-            .filter(user=user)
-            .aggregate(total=Sum('view_count'))['total'] or 0
-        )
-
-
         download_by_day = {row['day']: row['count'] for row in download_qs}
-        engagement_by_day = {row['day']: row['count'] for row in engagement_qs}
+        view_by_day = {row['day']: row['count'] for row in view_qs}
 
-        all_days_with_data = set(download_by_day.keys()) | set(engagement_by_day.keys())
-
-        if not all_days_with_data:
-
-            return Response({
-                "days": [today.isoformat()],
-                "views": [total_views],
-                "downloads": [0],
-            })
-
-        start_date = max(min(all_days_with_data), earliest_date)
-        num_days = min((today - start_date).days + 1, MAX_DAYS)
-
+        # اگه هیچ داده‌ای در بازه نبود، همه روزها صفر برگردون
         days = []
         views = []
         downloads = []
 
-        for i in range(num_days):
-            d = start_date + timedelta(days=i)
+        for i in range(MAX_DAYS):
+            d = earliest_date + timedelta(days=i)
             days.append(d.isoformat())
+            views.append(view_by_day.get(d, 0))
             downloads.append(download_by_day.get(d, 0))
-
-            if d == today:
-                views.append(total_views)
-            else:
-                views.append(engagement_by_day.get(d, 0))
 
         return Response({
             "days": days,
@@ -672,7 +643,8 @@ class DashboardStatsView(APIView):
         projects_qs = Project.objects.filter(user=user)
 
         total_projects = projects_qs.count()
-        total_downloads = projects_qs.aggregate(s=Sum('download_count'))['s'] or 0
+        from activity.models import ProjectDownloadLog
+        total_downloads = ProjectDownloadLog.objects.filter(project__user=user).count()
         total_comments = Comment.objects.filter(
             project__user=user,
             status='active',

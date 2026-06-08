@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { getDashboardStatsService } from '~/services/notification/notification.Service'
 import { toPersianNumerals } from '~/utilities/dateHelpers'
 import type { StatCard } from '~/models/Dashboard/dashboardTypes'
@@ -127,4 +127,13 @@ const fetchStats = async () => {
 }
 
 onMounted(fetchStats)
+
+// ── Sync unread_notifications با notificationStore ──────────────────────
+const notifStore = useNotificationStore()
+
+// وقتی unreadCount در store عوض شد، کارت رو هم آپدیت کن
+watch(
+  () => notifStore.unreadCount,
+  (val) => { stats.value[3].value = val },
+)
 </script>

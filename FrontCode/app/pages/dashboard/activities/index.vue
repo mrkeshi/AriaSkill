@@ -145,7 +145,6 @@ import type { ActivityDTO, ActivityType } from '~/models/Activity/ActivityDTO'
 import {
   deleteActivityService,
   getActivitiesService,
-  getUnseenActivityCountService,
   markActivitySeenService,
   markAllActivitiesSeenService,
 } from '~/services/activity/activity.Service'
@@ -198,15 +197,12 @@ const { data, pending, refresh } = await useAsyncData(
   { watch: [currentPage, activeSeenKey, activeType] },
 )
 
-const { data: unseenData, refresh: refreshUnseen } = await useAsyncData(
-  'activity-unseen-count',
-  () => getUnseenActivityCountService(),
-)
+const activityStore = useActivityStore()
 
 const activities = computed<ActivityDTO[]>(() => data.value?.data?.results ?? [])
 const totalCount = computed(() => data.value?.data?.count ?? 0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 10))
-const unseenCount = computed(() => unseenData.value?.data?.unseen_count ?? 0)
+const unseenCount = computed(() => activityStore.unseenCount)
 
 const rowClass = (isSeen: boolean) => {
   if (activeSeenKey.value === 'all') {
@@ -233,7 +229,7 @@ const handleMarkSeen = async (activity: ActivityDTO) => {
   try {
     await markActivitySeenService(activity.id, true)
     activity.is_seen = true
-    await refreshUnseen()
+    activityStore.decrement(1)
   } finally {
     loadingId.value = null
   }
@@ -246,7 +242,7 @@ const handleDelete = async () => {
     await deleteActivityService(selectedId.value)
     showInfo({ title: 'فعالیت حذف شد', message: 'فعالیت با موفقیت حذف شد.' })
     await refresh()
-    await refreshUnseen()
+    await activityStore.fetchUnseenCount()
   } finally {
     loadingId.value = null
     selectedId.value = null
@@ -259,7 +255,7 @@ const handleMarkAllSeen = async () => {
     await markAllActivitiesSeenService()
     showInfo({ title: 'انجام شد', message: 'همه فعالیت‌ها به عنوان دیده‌شده علامت‌گذاری شدند.' })
     await refresh()
-    await refreshUnseen()
+    activityStore.reset()
   } finally {
     markAllLoading.value = false
   }

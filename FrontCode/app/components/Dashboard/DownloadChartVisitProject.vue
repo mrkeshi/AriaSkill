@@ -32,13 +32,13 @@ VUE
       </div>
  
       <!-- Loading State -->
-      <div v-if="pending" class="w-full h-[400px] flex flex-col items-center justify-center gap-3 text-gray-500 text-sm">
+      <div v-if="pending" class="w-full h-[500px] flex flex-col items-center justify-center gap-3 text-gray-500 text-sm">
         <Icon name="line-md:loading-twotone-loop" size="24" class="text-classic-gold" />
         <span>در حال آنالیز و رندر داده‌ها...</span>
       </div>
  
       <!-- Empty State: No Projects -->
-      <div v-else-if="isEmpty" class="w-full h-[400px] flex flex-col items-center justify-center gap-4 text-gray-500">
+      <div v-else-if="isEmpty" class="w-full h-[500px] flex flex-col items-center justify-center gap-4 text-gray-500">
         <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
           <Icon name="ph:chart-line-up-duotone" size="32" class="text-classic-gold opacity-60" />
         </div>
@@ -51,7 +51,7 @@ VUE
       <!-- Chart -->
       <!-- DashboardApexWrapper is a .client.vue component, so Nuxt skips it   -->
       <!-- on the server entirely — no SSR "failed to resolve apexchart" warn. -->
-      <div v-else class="w-full h-[400px] text-black" dir="ltr">
+      <div v-else class="w-full h-[500px] text-black" dir="ltr">
         <ClientOnly>
           <DashboardApexWrapper
             width="100%"
