@@ -21,6 +21,18 @@
 </template>
 
 <script setup lang="ts">
+
+/**
+ * Shared/CoverImageUpload.vue
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Provides an image upload preview area with automated memory management.
+ * - Generates a local object URL for instant, zero-upload file previews.
+ * - Automatically revokes obsolete URLs on re-selection or component unmount 
+ * to prevent memory leaks.
+ * - Emits the native File object to the parent for final form submission.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 import { ref, watch, onBeforeUnmount } from 'vue'
 
 const props = defineProps<{

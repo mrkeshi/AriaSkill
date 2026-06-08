@@ -12,7 +12,7 @@
     </NuxtLink>
   </li>
 </template>
-
+<!-- Header Component -->
 <script setup lang="ts">
 defineProps<{
   to: string

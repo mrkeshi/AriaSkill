@@ -109,6 +109,11 @@
 </template>
 
 <script setup>
+/**
+ * - High-end cyber-stylized sticky sidebar layout with dynamic collapse animations.
+ * - Handles real-time cross-store metrics hydration (unread counters) asynchronously.
+ * - Features contextual structural partitioning isolating standard actions from admin subsystems.
+ */
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 

@@ -102,6 +102,11 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * - Renders a sleek asynchronous log dashboard widget mapping recent profile operations.
+ * - Eradicates possible compile-time 'undefined' breakages using runtime short-circuiting (?.).
+ * - Orchestrates reactive data hydration pipelines natively coupled with global layout listeners.
+ */
 import type { ActivityDTO, ActivityType } from '~/models/Activity/ActivityDTO'
 import {
   deleteActivityService,

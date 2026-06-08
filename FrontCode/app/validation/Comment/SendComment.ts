@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-
+// Comment Schema for Validation
 export const ResetPassowrdWithEmailSchema = Yup.object().shape({
   email: Yup.string()
     .email('ایمیل باید معتبر باشد')

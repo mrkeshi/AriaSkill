@@ -7,10 +7,11 @@
       <p class="text-gray-400 text-sm md:text-base font-light">همین حالا به تیم‌های توسعه بپیوند و روی لبه تکنولوژی قدم بردار.</p>
     </div>
 
-    <button class="w-full lg:w-auto px-10 py-5 bg-gradient-to-r from-classic-gold to-yellow-500 text-neutral-950 font-black text-base rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_45px_rgba(212,175,55,0.7)] hover:scale-[1.03] active:scale-98 transition-all duration-300 whitespace-nowrap">
+    <NuxtLink to="/user/login/" class="w-full lg:w-auto px-10 py-5 bg-gradient-to-r from-classic-gold to-yellow-500 text-neutral-950 font-black text-base rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:shadow-[0_0_45px_rgba(212,175,55,0.7)] hover:scale-[1.03] active:scale-98 transition-all duration-300 whitespace-nowrap">
       شروع اولین پروژه
-    </button>
+    </NuxtLink>
   </div>
 </template>
+<!-- footer component -->
 
 <script setup lang="ts"></script>

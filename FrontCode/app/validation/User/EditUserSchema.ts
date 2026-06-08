@@ -1,6 +1,6 @@
 import { createFileSchema } from "../createFileSchema ";
 import * as Yup from 'yup'
-
+/** Validation schema for the user profile editing form, featuring custom avatar file constraints. */
 export const editUserSchema = Yup.object({
   avatar: createFileSchema({
     required: false,

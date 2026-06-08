@@ -17,3 +17,4 @@
     </h1>
   </NuxtLink>
 </template>
+<!-- Header Logo -->

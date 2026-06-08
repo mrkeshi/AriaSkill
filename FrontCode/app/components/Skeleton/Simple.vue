@@ -13,3 +13,4 @@ defineProps<{
   repeat?: number
 }>()
 </script>
+<!-- simple skeleton -->

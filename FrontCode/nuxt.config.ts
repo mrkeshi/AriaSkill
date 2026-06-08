@@ -23,10 +23,6 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
   ],
 
-  // Fix: "Failed to resolve component: apexchart"
-  // apexchart is registered client-side only via the plugin.
-  // Telling Vue's compiler to treat it as a custom element prevents the
-  // SSR-side "unknown component" warning without breaking functionality.
 
 
   // Fix: "Failed to stringify dev server logs — Cannot stringify a function"

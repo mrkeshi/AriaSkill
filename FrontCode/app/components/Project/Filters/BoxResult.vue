@@ -3,7 +3,6 @@
     <h2 class="text-xl font-semibold text-white mb-4">فیلتر اعمال شده</h2>
     <div class="flex flex-wrap w-full gap-3">
 
-      <!-- جستجوی متنی -->
       <a
         v-if="filters.q"
         class="backdrop-blur-md transition relative hover:opacity-50 shadow-2xl p-2 bg-carb-gray/40 border border-white/10 rounded-md flex items-center gap-1.5"
@@ -19,7 +18,6 @@
         </span>
       </a>
 
-      <!-- تکنولوژی‌های انتخاب‌شده -->
       <template v-if="selectedTechObjects.length">
         <a
           v-for="tech in selectedTechObjects"
@@ -37,7 +35,6 @@
         </a>
       </template>
 
-      <!-- سال‌های انتخاب‌شده -->
       <template v-if="filters.years.length">
         <a
           v-for="year in filters.years"
@@ -56,7 +53,6 @@
         </a>
       </template>
 
-      <!-- دسته‌بندی‌های انتخاب‌شده -->
       <template v-if="filters.category.length">
         <a
           v-for="cat in filters.category"
@@ -75,7 +71,6 @@
         </a>
       </template>
 
-      <!-- دکمه پاک کردن همه -->
       <a
         v-if="hasActiveFilters"
         @click="resetAll"
@@ -96,6 +91,13 @@
 </template>
 
 <script lang="ts" setup>
+
+/**
+ * - High-end cyber-stylized dynamic ribbon displaying active filtration status.
+ * - Resolves localized entity relationship mapping between slugs and paginated store lists.
+ * - Implements declarative structural fallbacks isolating empty filtration states.
+ */
+
 import type { ProjectCategory } from '~/models/Project/FilterProjectDTO'
 import type { skillItem } from '~/models/Skill/SkillDTO'
 import { getSkillsService } from '~/services/skills/skills.Service'
@@ -121,7 +123,7 @@ const {
   toggleCategory: (cat: ProjectCategory) => void
 }>()
 
-// کش تکنولوژی‌ها برای نمایش نام و آیکون
+
 const allTechnologies = ref<skillItem[]>([])
 
 onMounted(async () => {

@@ -22,21 +22,22 @@
 
 <script setup lang="ts">
 /**
- * Auth/GoogleButton.vue
- * ─────────────────────────────────────────────────────────────────────────────
- * فلو کامل:
- *   ۱. SDK گوگل رو داینامیک لود می‌کنه (بدون npm)
- *   ۲. وقتی کاربر کلیک کنه، popup انتخاب حساب باز می‌شه
- *   ۳. بعد از انتخاب، Google یه id_token (credential) برمیگردونه
- *   ۴. credential رو emit می‌کنه به parent (login.vue یا register.vue)
- *   ۵. parent اون رو به authStore.loginWithGoogle() میده
- *   ۶. authStore از googleAuthService → POST /api/account/google/ میزنه
- *   ۷. Django توکن رو verify می‌کنه، یوزر می‌سازه/پیدا می‌کنه، JWT برمیگردونه
- *   ۸. applyAuth() کوکی ها رو ست می‌کنه → redirect به dashboard
- *
- * هیچ صفحه google-callback نیاز نیست — همه چیز درون همین popup اتفاق میفته.
- * ─────────────────────────────────────────────────────────────────────────────
- */
+* [1] Mount & Load  ──> Dynamically loads Google GIS SDK script.
+*         │
+* [2] Initialize    ──> Configures Client ID and sets "popup" UX mode.
+*         │
+* [3] User Click    ──> Invokes Google One Tap prompt.
+*         │             └─ Fallback: Simulates click on standard hidden button if prompt fails.
+*         │
+* [4] Authentication──> User selects account via Google Popup window.
+*         │
+* [5] Token Emitted ──> Receives `id_token` (credential) and emits it to parent view.
+*         │
+* [6] Backend Auth  ──> Parent passes token to Django via API endpoint.
+*         │
+* [7] Complete      ──> Django verifies token, generates JWT, and sets final session cookies.
+
+*/
 
 const props = defineProps<{
   loading?: boolean
@@ -46,18 +47,15 @@ const emit = defineEmits<{
   (e: 'credential', token: string): void
 }>()
 
-// Client ID از nuxt.config.ts → runtimeConfig.public.googleClientId
 const config = useRuntimeConfig()
 const googleClientId = config.public.googleClientId as string
 
 const isReady = ref(false)
 
-// ─── لود اسکریپت گوگل ────────────────────────────────────────────────────────
 const loadScript = (): Promise<void> =>
   new Promise((resolve, reject) => {
     if (typeof window === 'undefined') return resolve()
 
-    // اگه قبلاً لود شده بود
     if ((window as any).google?.accounts?.id) {
       isReady.value = true
       return resolve()
@@ -72,45 +70,50 @@ const loadScript = (): Promise<void> =>
     document.head.appendChild(script)
   })
 
-// ─── initialize Google Identity Services ─────────────────────────────────────
+/**
+ * Initializes the Google Identity Services SDK.
+ * Configures the Client ID, sets up the authentication callback,
+ * and enforces "popup" UX mode for seamless sign-in.
+ */
+
 const initGoogle = () => {
   if (!googleClientId) {
-    console.warn('[GoogleButton] NUXT_PUBLIC_GOOGLE_CLIENT_ID خالیه! مقدار رو در .env بذار.')
+    console.warn('[GoogleButton] NUXT_PUBLIC_GOOGLE_CLIENT_ID is missing! Please set it in .env')
     return
   }
 
   ;(window as any).google.accounts.id.initialize({
     client_id: googleClientId,
-    // این callback وقتی کاربر حساب انتخاب کنه صدا زده می‌شه
     callback: ({ credential }: { credential: string }) => {
       if (credential) emit('credential', credential)
     },
-    auto_select: false,        // انتخاب خودکار حساب رو غیرفعال می‌کنیم
+    auto_select: false,
     cancel_on_tap_outside: true,
-    ux_mode: 'popup',          // ← مهم: popup نه redirect (نیازی به callback page نیست)
+    ux_mode: 'popup',
   })
 }
 
-// ─── کلیک → نمایش popup ──────────────────────────────────────────────────────
+/**
+ * Handles the custom button click event.
+ * Attempts to display the Google One Tap prompt first;
+ * falls back to the standard popup if the prompt is skipped or blocked.
+ */
 const handleClick = () => {
   const gAccounts = (window as any).google?.accounts?.id
   if (!gAccounts) return
 
-  /*
-   * google.accounts.id.prompt() اول سعی می‌کنه One Tap نشون بده.
-   * اگه One Tap نشد (قبلاً dismiss شده یا browser بلاکش کرده)،
-   * ما مستقیماً renderButton رو روی یه div مخفی رندر می‌کنیم و click می‌زنیم
-   * تا popup استاندارد گوگل باز بشه — بدون نیاز به redirect یا callback page.
-   */
   gAccounts.prompt((notification: any) => {
     if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-      // Fallback: رندر دکمه مخفی گوگل و کلیک برنامه‌ای
       triggerGoogleButton()
     }
   })
 }
 
-// ─── Fallback: دکمه مخفی گوگل ────────────────────────────────────────────────
+/**
+ * Fallback mechanism for Google Sign-In.
+ * Dynamically creates a hidden container, renders the official Google button,
+ * and programmatically clicks it to bypass browser/SDK restrictions.
+ */
 const triggerGoogleButton = () => {
   const container = document.createElement('div')
   container.style.display = 'none'
@@ -121,17 +124,14 @@ const triggerGoogleButton = () => {
     size: 'large',
   })
 
-  // دکمه‌ای که گوگل رندر کرد رو پیدا کن و کلیک بزن
   const btn = container.querySelector('div[role="button"]') as HTMLElement | null
   if (btn) {
     btn.click()
   }
 
-  // cleanup
   setTimeout(() => document.body.removeChild(container), 1000)
 }
 
-// ─── lifecycle ────────────────────────────────────────────────────────────────
 onMounted(async () => {
   try {
     await loadScript()

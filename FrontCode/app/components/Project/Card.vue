@@ -57,6 +57,11 @@
 
 
 <script lang="ts" setup>
+/**
+ * - Implements a highly scalable glassmorphic asset/project display node canvas.
+ * - Handles adaptive state transformations via structural responsive minimization flags.
+ * - Caps relational taxonomy chip collections maximizing strict performance grid boundaries.
+ */
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 import { toJalaliLong } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'

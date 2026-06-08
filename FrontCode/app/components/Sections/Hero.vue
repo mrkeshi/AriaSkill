@@ -23,7 +23,7 @@
 
             <UiButton
               variant="outline"
-              :to="{ name: 'user-login' }"
+              to="/explore"
                icon="mdi:magnify"
             >
               جستجوی پروژه‌ها
@@ -44,7 +44,7 @@
 
 
 </template>
-
+<!-- Hero HomPage Section -->
 <script lang="ts" setup>
 
 </script>

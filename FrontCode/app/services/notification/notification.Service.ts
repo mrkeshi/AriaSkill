@@ -1,4 +1,5 @@
 import type { ApiResponse } from '~/models/ApiResponseDTO'
+import type { DashboardStatsDTO } from '~/models/Dashboard/dashboardTypes'
 import type {
   BroadcastPayloadDTO,
   BroadcastResponseDTO,
@@ -29,7 +30,7 @@ export const getNotificationsService = (
 export const getUnreadNotificationCountService = (): Promise<ApiResponse<NotificationUnreadCountDTO>> =>
   FetchX('notifications/unread-count/', { method: 'get' })
 
-// ── Write ─────────────────────────────────────────────────────────────────
+
 
 export const markNotificationReadService = (
   id: number,
@@ -43,21 +44,15 @@ export const markAllNotificationsReadService = (): Promise<ApiResponse<Notificat
 export const deleteNotificationService = (id: number): Promise<ApiResponse<null>> =>
   FetchX(`notifications/${id}/`, { method: 'delete' })
 
-// ── Admin ─────────────────────────────────────────────────────────────────
+
 
 export const sendBroadcastService = (
   payload: BroadcastPayloadDTO,
 ): Promise<ApiResponse<BroadcastResponseDTO>> =>
   FetchX('notifications/admin/broadcast/', { method: 'post', body: payload })
 
-// ── Dashboard stats ───────────────────────────────────────────────────────
 
-export interface DashboardStatsDTO {
-  total_projects: number
-  total_downloads: number
-  total_comments: number
-  unread_notifications: number
-}
+
 
 export const getDashboardStatsService = (): Promise<ApiResponse<DashboardStatsDTO>> =>
   FetchX('project/dashboard/stats/', { method: 'get' })
