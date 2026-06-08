@@ -57,10 +57,7 @@ class Activity(models.Model):
         self.save(update_fields=['deleted_at', 'updated_at'])
 
 
-
-
 class ProjectDownloadLog(models.Model):
-
     project = models.ForeignKey(
         'projects.Project',
         on_delete=models.CASCADE,
@@ -80,5 +77,29 @@ class ProjectDownloadLog(models.Model):
             models.Index(
                 fields=['project', 'downloaded_at'],
                 name='download_log_project_date_idx'
+            ),
+        ]
+
+
+class ProjectViewLog(models.Model):
+    project = models.ForeignKey(
+        'projects.Project',
+        on_delete=models.CASCADE,
+        related_name='view_logs',
+    )
+    viewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    viewed_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=['project', 'viewed_at'],
+                name='view_log_project_date_idx'
             ),
         ]

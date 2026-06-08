@@ -170,6 +170,8 @@ import {
 import { notifStyle } from '~/utilities/notificationHelpers'
 import { relativeTime } from '~/utilities/dateHelpers'
 
+const notifStore = useNotificationStore()
+
 definePageMeta({ layout: 'dashboard' })
 
 const seo = generateSeoMeta({
@@ -248,10 +250,10 @@ const markRead = async (item) => {
   try {
     await markNotificationReadService(item.id)
     item.is_read = true
-    // remove from unread tab list
     if (activeTab.value === 'unread') {
       items.value = items.value.filter(n => n.id !== item.id)
       total.value = Math.max(0, total.value - 1)
+      notifStore.decrement(1)
     }
   } catch { /* silent */ }
 }
@@ -262,6 +264,7 @@ const markAllRead = async () => {
     await markAllNotificationsReadService()
     items.value = []
     total.value = 0
+    notifStore.reset()
   } catch { /* silent */ }
   finally { markingAll.value = false }
 }

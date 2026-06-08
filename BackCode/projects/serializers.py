@@ -44,8 +44,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         required=False,
     )
     likes_count = serializers.IntegerField(read_only=True)
-    download_count = serializers.IntegerField(read_only=True)
-    view_count = serializers.IntegerField(read_only=True)
+    download_count = serializers.SerializerMethodField()
+    view_count = serializers.SerializerMethodField()
     user_has_liked = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
 
@@ -53,12 +53,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = [
             'id', 'title', 'slug', 'description', 'image', 'file',
-            'created_at', 'updated_at', 'user', 'likes_count', 'user_has_liked', 'download_count', 'view_count',
+            'created_at', 'updated_at', 'user', 'likes_count', 'user_has_liked',
+            'download_count', 'view_count',
             'comments_count', 'project_type', 'project_type_display', 'skills', 'skill_ids', 'status'
         ]
         read_only_fields = [
             'id', 'slug', 'created_at', 'updated_at', 'user',
-            'likes_count', 'user_has_liked', 'download_count', 'view_count',
+            'likes_count', 'user_has_liked',
+            'download_count', 'view_count',
             'comments_count', 'project_type_display', 'skills', 'status',
         ]
 
@@ -70,6 +72,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_comments_count(self, obj) -> int:
         return obj.comments.filter(status='active', parent__isnull=True).count()
+
+    def get_download_count(self, obj) -> int:
+        return obj.download_logs.count()
+
+    def get_view_count(self, obj) -> int:
+        return obj.view_logs.count()
 
 
 class ProjectStatusSerializer(serializers.Serializer):

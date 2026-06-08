@@ -184,6 +184,26 @@ class ActivityService:
             metadata=meta,
         )
 
+    @staticmethod
+    def project_viewed(project, request=None) -> None:
+        """
+        لاگ بازدید از پروژه را ثبت می‌کند.
+        این متد Activity نمی‌سازد؛ فقط ProjectViewLog ثبت می‌کند.
+        کاربر می‌تواند ناشناس (anonymous) باشد.
+        """
+        meta = request_metadata(request)
+
+        from activity.models import ProjectViewLog
+        viewer = None
+        if request and getattr(request.user, 'is_authenticated', False):
+            viewer = request.user
+
+        ProjectViewLog.objects.create(
+            project=project,
+            viewer=viewer,
+            ip_address=meta.get('ip_address'),
+        )
+
     # ── Comments ──────────────────────────────────────────────────────────────
 
     @staticmethod

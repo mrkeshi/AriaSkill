@@ -119,20 +119,14 @@ const route  = useRoute()
 const logout = ref(false)
 
 // ── Activity unseen count ──────────────────────────────────────────────────
-const { data: unseenData } = await useAsyncData(
-  'activity-unseen-count',
-  () => import('~/services/activity/activity.Service').then(m => m.getUnseenActivityCountService()),
-  { server: false },
-)
-const unseenCount = computed(() => unseenData.value?.data?.unseen_count ?? 0)
+const activityStore = useActivityStore()
+const unseenCount = computed(() => activityStore.unseenCount)
+await activityStore.fetchUnseenCount()
 
 // ── Notification unread count ──────────────────────────────────────────────
-const { data: notifData } = await useAsyncData(
-  'notification-unread-count',
-  () => import('~/services/notification/notification.Service').then(m => m.getUnreadNotificationCountService()),
-  { server: false },
-)
-const unreadNotifCount = computed(() => notifData.value?.data?.unread_count ?? 0)
+const notifStore = useNotificationStore()
+const unreadNotifCount = computed(() => notifStore.unreadCount)
+await notifStore.fetchUnreadCount()
 
 // ── Route helpers ──────────────────────────────────────────────────────────
 const isActive    = (path) => route.path.startsWith(path)
