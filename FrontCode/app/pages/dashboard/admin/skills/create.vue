@@ -56,6 +56,21 @@
 </template>
 
 <script setup>
+/**
+ * @page AdminCreateSkill
+ * @description Back-office form utility for registering new core system skills along with binary icon assets.
+ * 
+ * @logic_flow
+ * - Form Core: Blends external Vee-Validate constraints (`SkillsSchema`) with localized `reactive` model states.
+ * - Media Pipeline: Builds isolated, volatile local object streams for instant image previews without server roundtrips.
+ * - Data Transport: Translates state trees into a native multipart `FormData` wrapper to safely upload raw file binaries.
+ * 
+ * @memory_management
+ * - Dynamic Watcher: Revokes active local blobs dynamically whenever the user selects a new asset variant.
+ * - Garbage Collection: Automatically calls `URL.revokeObjectURL` inside the `onBeforeUnmount` lifecycle hook 
+ *   to eliminate potential memory leaks and release system RAM.
+
+ */
 import { ref, reactive, watch, onBeforeUnmount } from 'vue';
 import { Form } from 'vee-validate';
 import { SkillsSchema } from '~/validation/Skills/CreateSkills';

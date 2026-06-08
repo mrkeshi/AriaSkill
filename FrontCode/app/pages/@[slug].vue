@@ -201,6 +201,8 @@
 </template>
 
 <script setup lang="ts">
+// @page UserProfile
+// This page displays the public profile of a user based on their username. It retrieves the username from the route parameters, fetches the user's profile data from the server, and displays it in a
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, watchEffect } from '#imports'
 import { useHead } from '#app'

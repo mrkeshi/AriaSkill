@@ -73,7 +73,7 @@
               class="hover:bg-white/[0.05] transition-all duration-300 group"
               :class="{ 'opacity-50': item.status === 'inactive' }"
             >
-              <td class="p-4 text-center text-gray-500 font-mono text-xs">{{ toPersianNumerals(rowNumber(index, currentPage.value, 10)) }}</td>
+              <td class="p-4 text-center text-gray-500  text-xs">{{ toPersianNumerals(rowNumber(index, currentPage, 10)) }}</td>
 
               <td class="p-4">
                 <div class="flex items-center gap-3">
@@ -151,6 +151,19 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @page ProjectCommentsManagement
+ * @description Back-office supervisor module allowing project creators to review feedback and dispatch nested replies.
+ * 
+ * @logic_flow
+ * - Nested Submittals: Sends replies via `sendProjectCommentService` linking individual records to parent foreign keys (`parent: id`).
+ * - Form Destruction: Cleanses the active local validation state engine by passing `{ resetForm }` context handles down to async handlers.
+ * - Dynamic Indexing: Utilizes standard `rowNumber` helpers to maintain strict incremental counters spanning multiple data pages.
+ * 
+ * @data_structures
+ * - Validation Boundary: Leverages structural `yup` object nodes (`ReplySchema`) to enforce strict local rule evaluation.
+ * - Network Polling: Evaluates lazy records inside an asynchronous framework (`useAsyncData`) bound to reactive paging instances.
+ */
 import { object, string } from 'yup'
 import { Form } from 'vee-validate'
 import type { CommentManagementDTO } from '~/models/Comment/SendCommentDTO'

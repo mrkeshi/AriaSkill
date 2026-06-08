@@ -20,6 +20,19 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @component ProjectCreationCoordinator
+ * @description Orchestration script for receiving pre-validated project configuration entities and binary payloads.
+ * Serves as an isolated presentation controller forwarding native objects down to persistence services.
+ * 
+ * @logic_flow
+ * - Boundary Processing : Acts as a dedicated event sink receiving complex multi-part binary data packages (`FormData`).
+ * - Transaction Lifecycle: Binds isolated loader hooks (`loading = true`) across async operations to freeze upstream UI components.
+ * - Transit Management  : Directs application flow on transaction resolution by enforcing explicit client-side route migrations.
+ * 
+ * @metadata
+ * - SEO Ingestion: Compiles isolated contextual keywords and descriptive anchors into programmatic headers on initialization.
+ */
 import { ref } from 'vue'
 import { createProjectService } from '~/services/projects/project.Service'
 import { useCustomToastify } from '~/composable/useCustomToasitify'

@@ -190,6 +190,23 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @page UserProfileMutationController
+ * @description Back-office identity panel orchestrating user profile updates, social profile text sanitization, and avatar uploading.
+ * 
+ * @logic_flow
+ * - Dynamic Normalization: Passes the local text parameters through `normalizeSocialLinks` to cleanse prefix formats prior to serializing.
+ * - String vs File Tracking: Differentiates remote resource media URLs (rendered via `resolveMediaUrl`) from local binary blocks.
+ * - Legacy Typo Guard: Intercepts inconsistent API responses via explicit fallback checks handling misnamed properties (`profile.avatr`).
+ * 
+ * @memory_management
+ * - Isolated Scope References: Holds runtime preview memory addresses outside the reactive proxy bubble using a mutable standalone pointer (`let objectUrl`).
+ * - Targeted GC Collection: Triggers automatic `URL.revokeObjectURL` invocations inside unmount hooks and watchers to eliminate active RAM leakages.
+ * 
+ * @store_synchronization
+ * - Global Hydration Sync: Triggers `authStore.fetchUser()` immediately following transactional resolution to update global navbar avatars across layout views.
+
+ */
 definePageMeta({
   layout: 'dashboard'
 })

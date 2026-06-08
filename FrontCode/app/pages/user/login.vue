@@ -69,6 +69,8 @@
 </template>
 
   <script setup lang="ts">
+  // @page UserLogin
+  // This page allows users to log in to their account using either their email or username and password. It includes form validation using VeeValidate and a Google login option. Upon successful login, the user is redirected to the dashboard. The page also includes SEO metadata for better search engine visibility. 
   import { reactive } from 'vue'
   import type { LoginDTO } from '~/models/User/AuthDTO';
   import { LoginSchema } from '~/validation/User/UserValidation';

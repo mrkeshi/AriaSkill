@@ -1,22 +1,28 @@
 from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from notification.models import Notification
 from notification.serializers import (
+    BroadcastLogSerializer,
     BroadcastSerializer,
     NotificationFilterSerializer,
     NotificationMarkReadSerializer,
     NotificationSerializer,
 )
-from notification.services import NotificationService
+from notification.services import BroadcastLogService, NotificationService
 
+class StandardPagination(PageNumberPagination):
+    page_size            = 8
+    page_size_query_param = 'page_size'
+    max_page_size        = 50
 
 class NotificationListView(generics.ListAPIView):
-    """GET /api/notifications/ — full paginated list with optional filters."""
+    
     permission_classes = (IsAuthenticated,)
-    serializer_class = NotificationSerializer
+    serializer_class   = NotificationSerializer
 
     def get_queryset(self):
         filter_ser = NotificationFilterSerializer(data=self.request.query_params)
@@ -32,26 +38,23 @@ class NotificationListView(generics.ListAPIView):
 
         return qs
 
-
 class NotificationRecentView(APIView):
-    """GET /api/notifications/recent/ — latest 6, unread first."""
+    
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         items = NotificationService.recent_for(request.user)
         return Response(NotificationSerializer(items, many=True).data)
 
-
 class NotificationUnreadCountView(APIView):
-    """GET /api/notifications/unread-count/"""
+    
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         return Response({'unread_count': NotificationService.unread_count(request.user)})
 
-
 class NotificationMarkReadView(APIView):
-    """PATCH /api/notifications/<id>/mark-read/"""
+    
     permission_classes = (IsAuthenticated,)
 
     def patch(self, request, pk):
@@ -71,18 +74,16 @@ class NotificationMarkReadView(APIView):
             pk=pk, user=user, deleted_at__isnull=True
         ).first()
 
-
 class NotificationMarkAllReadView(APIView):
-    """PATCH /api/notifications/mark-all-read/"""
+    
     permission_classes = (IsAuthenticated,)
 
     def patch(self, request):
         updated = NotificationService.mark_all_read(request.user)
         return Response({'updated': updated})
 
-
 class NotificationDeleteView(APIView):
-    """DELETE /api/notifications/<id>/"""
+    
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, pk):
@@ -94,14 +95,8 @@ class NotificationDeleteView(APIView):
         NotificationService.delete(notif)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-# ── Admin-only ─────────────────────────────────────────────────────────────────
-
 class AdminBroadcastView(APIView):
-    """
-    POST /api/notifications/admin/broadcast/
-    Admin sends a broadcast message to ALL active users.
-    """
+    
     permission_classes = (IsAdminUser,)
 
     def post(self, request):
@@ -116,4 +111,22 @@ class AdminBroadcastView(APIView):
         return Response(
             {'detail': f'پیام همگانی با موفقیت برای {count} کاربر ارسال شد.', 'count': count},
             status=status.HTTP_201_CREATED,
+        )
+
+class AdminBroadcastLogView(APIView):
+    
+    permission_classes = (IsAdminUser,)
+
+    def get(self, request):
+        qs         = BroadcastLogService.list_logs()
+        paginator  = StandardPagination()
+        page       = paginator.paginate_queryset(qs, request)
+        serializer = BroadcastLogSerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    def delete(self, request):
+        deleted = BroadcastLogService.clear_all()
+        return Response(
+            {'detail': f'{deleted} رکورد لاگ پاک شد.', 'deleted': deleted},
+            status=status.HTTP_200_OK,
         )

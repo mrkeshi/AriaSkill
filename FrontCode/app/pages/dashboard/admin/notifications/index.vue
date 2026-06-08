@@ -1,7 +1,7 @@
 <template>
   <UiCardBlury>
 
-    <!-- Page title -->
+    
     <div class="flex items-start gap-3 mb-8">
       <div class="w-1.5 h-8 bg-gradient-to-b from-purple-400 to-indigo-600 rounded-full mt-1"></div>
       <div>
@@ -12,7 +12,7 @@
 
     <div class="grid lg:grid-cols-5 gap-8">
 
-      <!-- ── Broadcast form (right column, 2/5) ── -->
+      
       <div class="lg:col-span-2 space-y-6">
 
         <div class="bg-white/[0.03] border border-white/10 rounded-2xl p-6 space-y-5">
@@ -26,7 +26,7 @@
             </div>
           </div>
 
-          <!-- Title input -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-400 mb-1.5">عنوان پیام</label>
             <input
@@ -40,7 +40,7 @@
             <p v-if="formErrors.title" class="text-rose-400 text-[11px] mt-1">{{ formErrors.title }}</p>
           </div>
 
-          <!-- Message textarea -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-400 mb-1.5">متن پیام</label>
             <textarea
@@ -57,7 +57,7 @@
             </div>
           </div>
 
-          <!-- Preview -->
+          
           <div
             v-if="form.title || form.message"
             class="p-3 rounded-xl border border-purple-500/20 bg-purple-500/5 space-y-1"
@@ -70,7 +70,7 @@
             <p class="text-xs text-gray-400 leading-relaxed">{{ form.message || '(بدون متن)' }}</p>
           </div>
 
-          <!-- Submit button -->
+          
           <button
             @click="sendBroadcast"
             :disabled="sending"
@@ -84,7 +84,7 @@
             {{ sending ? 'در حال ارسال...' : 'ارسال پیام همگانی' }}
           </button>
 
-          <!-- Success feedback -->
+          
           <Transition name="fade">
             <div
               v-if="lastResult"
@@ -96,10 +96,10 @@
           </Transition>
         </div>
 
-        <!-- Stats card -->
+        
         <div class="grid grid-cols-2 gap-3">
           <div class="bg-white/[0.03] border border-white/10 rounded-xl p-4 text-center">
-            <p class="text-2xl font-black text-white font-mono">{{ toPersianNumerals(broadcastsSent) }}</p>
+            <p class="text-2xl font-black text-white font-mono">{{ toPersianNumerals(totalBroadcasts) }}</p>
             <p class="text-[11px] text-gray-500 mt-1">پیام همگانی ارسال‌شده</p>
           </div>
           <div class="bg-white/[0.03] border border-white/10 rounded-xl p-4 text-center">
@@ -110,27 +110,72 @@
 
       </div>
 
-      <!-- ── Broadcast history (left column, 3/5) ── -->
+      
       <div class="lg:col-span-3">
         <div class="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
+
+          
           <div class="flex items-center justify-between mb-5">
-            <h2 class="text-sm font-bold text-white">تاریخچه پیام‌های همگانی</h2>
-            <button
-              @click="fetchHistory"
-              :disabled="historyLoading"
-              class="text-xs text-gray-400 hover:text-white transition flex items-center gap-1"
-            >
-              <Icon name="mdi:refresh" size="14" :class="historyLoading ? 'animate-spin' : ''" />
-              بارگذاری مجدد
-            </button>
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <Icon name="mdi:history" size="16" class="text-purple-400" />
+              تاریخچه پیام‌های همگانی
+            </h2>
+            <div class="flex items-center gap-2">
+              
+              <button
+                @click="fetchHistory"
+                :disabled="historyLoading"
+                class="text-xs text-gray-400 hover:text-white transition flex items-center gap-1"
+              >
+                <Icon name="mdi:refresh" size="14" :class="historyLoading ? 'animate-spin' : ''" />
+                بارگذاری مجدد
+              </button>
+              
+              <button
+                v-if="broadcastHistory.length > 0"
+                @click="confirmClear"
+                :disabled="clearing"
+                class="text-xs text-rose-400 hover:text-rose-300 transition flex items-center gap-1 border border-rose-500/20 px-2 py-1 rounded-lg hover:bg-rose-500/10"
+              >
+                <Icon name="mdi:delete-sweep-outline" size="14" />
+                پاک کردن همه لاگ‌ها
+              </button>
+            </div>
           </div>
 
-          <!-- Skeleton -->
+          
+          <Transition name="fade">
+            <div
+              v-if="showClearConfirm"
+              class="mb-4 p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 space-y-3"
+            >
+              <p class="text-sm text-rose-300 font-semibold" dir="rtl">
+                آیا مطمئن هستید؟ تمام تاریخچه لاگ‌ها برای همه پاک خواهد شد.
+              </p>
+              <div class="flex gap-2">
+                <button
+                  @click="clearLogs"
+                  :disabled="clearing"
+                  class="px-4 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition"
+                >
+                  {{ clearing ? 'در حال پاک‌سازی...' : 'بله، پاک شود' }}
+                </button>
+                <button
+                  @click="showClearConfirm = false"
+                  class="px-4 py-1.5 rounded-lg text-xs font-bold border border-white/10 text-gray-400 hover:text-white transition"
+                >
+                  انصراف
+                </button>
+              </div>
+            </div>
+          </Transition>
+
+          
           <div v-if="historyLoading" class="space-y-3">
             <div v-for="i in 5" :key="i" class="h-16 rounded-xl bg-white/5 animate-pulse"></div>
           </div>
 
-          <!-- Empty -->
+          
           <div
             v-else-if="broadcastHistory.length === 0"
             class="flex flex-col items-center justify-center py-10 text-gray-500"
@@ -139,7 +184,7 @@
             <p class="text-sm">هنوز پیامی ارسال نشده است.</p>
           </div>
 
-          <!-- History list -->
+          
           <div v-else class="space-y-3">
             <div
               v-for="item in broadcastHistory"
@@ -153,15 +198,25 @@
                 <div class="flex items-start justify-between gap-2">
                   <p class="text-sm font-bold text-white truncate">{{ item.title }}</p>
                   <span class="text-[10px] text-gray-600 whitespace-nowrap shrink-0">
-                    {{ relativeTime(item.created_at) }}
+                    {{ relativeTime(item.sent_at) }}
                   </span>
                 </div>
                 <p class="text-xs text-gray-400 mt-1 line-clamp-2">{{ item.message }}</p>
+                <div class="flex items-center gap-3 mt-2">
+                  <span class="text-[10px] text-gray-600 flex items-center gap-1">
+                    <Icon name="mdi:account-outline" size="11" />
+                    {{ item.sent_by_username }}
+                  </span>
+                  <span class="text-[10px] text-emerald-500/70 flex items-center gap-1">
+                    <Icon name="mdi:account-group-outline" size="11" />
+                    {{ toPersianNumerals(item.sent_to_count) }} کاربر
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Pagination -->
+          
           <div v-if="historyTotalPages > 1" class="flex items-center justify-center gap-3 mt-5">
             <button
               :disabled="historyPage <= 1"
@@ -188,11 +243,13 @@
 </template>
 
 <script setup>
+
 import { ref, computed, watch, onMounted } from 'vue'
 import { generateSeoMeta } from '~/utilities/seo'
 import {
   sendBroadcastService,
-  getNotificationsService,
+  getBroadcastLogService,
+  clearBroadcastLogService,
   getUnreadNotificationCountService,
 } from '~/services/notification/notification.Service'
 import { toPersianNumerals, relativeTime } from '~/utilities/dateHelpers'
@@ -209,9 +266,7 @@ const seo = generateSeoMeta({
   type: 'website',
 })
 useHead(seo)
-
-// ─── Form ──────────────────────────────────────────────────────────────────
-const form = ref({ title: 'پیام همگانی', message: '' })
+const form       = ref({ title: 'پیام همگانی', message: '' })
 const formErrors = ref({ title: '', message: '' })
 const sending    = ref(false)
 const lastResult = ref('')
@@ -232,47 +287,38 @@ const validate = () => {
 
 const sendBroadcast = async () => {
   if (!validate()) return
-  sending.value = true
+  sending.value    = true
   lastResult.value = ''
   try {
-    const res = await sendBroadcastService({
+    const res  = await sendBroadcastService({
       title:   form.value.title.trim(),
       message: form.value.message.trim(),
     })
-    const data  = res?.data ?? res
+    const data = res?.data ?? res
     lastResult.value = data?.detail ?? `پیام برای کاربران ارسال شد.`
-    broadcastsSent.value++
     form.value.message = ''
     form.value.title   = 'پیام همگانی'
-    // refresh history
     historyPage.value = 1
     await fetchHistory()
     setTimeout(() => { lastResult.value = '' }, 6000)
-  } catch {
-    // FetchX already shows toast on error
-  } finally {
-    sending.value = false
-  }
+  } catch {  }
+  finally  { sending.value = false }
 }
-
-// ─── History (broadcast type only) 
-const broadcastsSent = ref(0)
-const totalUnread    = ref(0)
-const broadcastHistory    = ref([])
-const historyLoading      = ref(true)
-const historyPage         = ref(1)
-const historyTotal        = ref(0)
-const PAGE_SIZE           = 8
-const historyTotalPages   = computed(() => Math.ceil(historyTotal.value / PAGE_SIZE))
+const broadcastHistory  = ref([])
+const historyLoading    = ref(true)
+const historyPage       = ref(1)
+const historyTotal      = ref(0)
+const PAGE_SIZE         = 8
+const historyTotalPages = computed(() => Math.ceil(historyTotal.value / PAGE_SIZE))
+const totalBroadcasts   = computed(() => historyTotal.value)
 
 const fetchHistory = async () => {
   historyLoading.value = true
   try {
-    const res  = await getNotificationsService(historyPage.value, 'broadcast', undefined)
-    const data  = res?.data ?? res
+    const res  = await getBroadcastLogService(historyPage.value)
+    const data = res?.data ?? res
     broadcastHistory.value = data?.results ?? []
     historyTotal.value     = data?.count   ?? 0
-    broadcastsSent.value   = data?.count   ?? 0
   } catch {
     broadcastHistory.value = []
   } finally {
@@ -281,17 +327,32 @@ const fetchHistory = async () => {
 }
 
 watch(historyPage, fetchHistory)
+const showClearConfirm = ref(false)
+const clearing         = ref(false)
+
+const confirmClear = () => {
+  showClearConfirm.value = true
+}
+
+const clearLogs = async () => {
+  clearing.value = true
+  try {
+    await clearBroadcastLogService()
+    showClearConfirm.value = false
+    historyPage.value = 1
+    await fetchHistory()
+  } catch {  }
+  finally  { clearing.value = false }
+}
+const totalUnread = ref(0)
 
 onMounted(async () => {
   await fetchHistory()
   try {
     const res = await getUnreadNotificationCountService()
     totalUnread.value = (res?.data ?? res)?.unread_count ?? 0
-  } catch { /* silent */ }
+  } catch {  }
 })
-
-
-
 </script>
 
 <style scoped>

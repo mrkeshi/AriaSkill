@@ -69,6 +69,8 @@
 </template>
 
 <script setup lang="ts">
+// @page UserResetPassword
+// This page allows users to reset their password using a token sent to their email. It retrieves the UID and token from the route parameters, validates the new password using a schema, and calls the
 import {ref } from 'vue'
 import { ChangePasswordSchema } from '~/validation/User/UserValidation'
 import { Form } from 'vee-validate'

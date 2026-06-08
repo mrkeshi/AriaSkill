@@ -79,6 +79,26 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @module ProjectPublicProfileController
+ * @description Core interactive hub managing public project presentation, interactive social actions, 
+ * and conversational comment threads on the Aria Craft (آریا کرفت) platform.
+ * 
+ * @architectural_patterns
+ * - Top-Level Await (SSR): Executes sequential blocking asynchronous calls (`loadProject` -> `loadComments`) 
+ *   during Nuxt's server-side rendering phase to ensure HTML metadata and initial lists are pre-hydrated for crawlers.
+ * - Reactive Route Tracking: Binds an active `watch` closure to dynamic URL slug variations to reset context states 
+ *   and re-trigger page fetch logic smoothly during nested view shifts.
+ * - Defensive Normalization: Implements an inline structural morph (`normalizeComments`) to safely map varying REST 
+ *   payload envelopes (both raw array feeds and paginated result blocks) down into predictable local arrays.
+ * 
+ * @platform_and_security_guards
+ * - Intent Interception: Wraps destructive or high-privilege social vectors (liking, downloading, commenting) 
+ *   behind stateful auth barriers (`ensureAuthenticated`) to prevent unauthenticated server strain.
+ * - Web API Isolation: Wraps client-centric features—such as asynchronous window redirection (`window.open`), 
+ *   native device sheets (`navigator.share`), and pasteboard interaction (`navigator.clipboard`) — within explicit 
+ *   `import.meta.client` evaluation sandboxes to protect Node.js context boundaries.
+ */
 import type { CommentDTO } from '~/models/Comment/SendCommentDTO'
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
 import {
@@ -270,12 +290,12 @@ const shareProject = async () => {
 }
 
 useHead(() => generateSeoMeta({
-  title: project.value ? `${project.value.title} | آریا اسکیل` : 'پروژه | آریا اسکیل',
-  description: project.value?.description?.slice(0, 160) || 'جزئیات پروژه در آریا اسکیل',
+  title: project.value ? `${project.value.title} | آریا کرفت` : 'پروژه | آریا کرفت',
+  description: project.value?.description?.slice(0, 160) || 'جزئیات پروژه در آریا کرفت',
   image: projectImage.value,
   url: `${requestUrl.origin}${route.fullPath}`,
-  keywords: project.value?.skills?.map(skill => skill.name) ?? ['پروژه', 'آریا اسکیل'],
-  author: project.value?.user?.full_name || project.value?.user?.username || 'آریا اسکیل',
+  keywords: project.value?.skills?.map(skill => skill.name) ?? ['پروژه', 'آریا کرفت'],
+  author: project.value?.user?.full_name || project.value?.user?.username || 'آریا کرفت',
   type: 'article',
 }))
 </script>

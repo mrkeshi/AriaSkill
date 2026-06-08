@@ -43,7 +43,7 @@
         <tr v-for="(item, index) in projects" :key="item.id" class="hover:bg-white/[0.05] transition-all duration-300 group">
           
 
-          <td class="p-4 text-center text-gray-500  text-xs">{{ toPersianNumerals(rowNumber(index, currentPage.value, 6)) }}</td>
+          <td class="p-4 text-center text-gray-500  text-xs">{{ toPersianNumerals(rowNumber(index, currentPage, 6)) }}</td>
 
           <td class="p-4">
             <div class="font-semibold text-white group-hover:text-classic-gold transition-colors duration-200">
@@ -135,6 +135,19 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @page MyProjectsListRegistry
+ * @description Administrative control deck displaying ownership matrices, media resolutions, and localized project listings.
+ * 
+ * @logic_flow
+ * - Isolated Destructions: Binds deletion confirmation loops to unique token strings (`string` slugs) rather than sequential primary keys.
+ * - Grid Architecture: Limits datasets to compact 6-row increments, utilizing computed pagination thresholds (`totalCount / 6`).
+ * - Row Counter Tracking: Implements standard global index trackers (`rowNumber`) to preserve table sequences across distinct data pages.
+ * 
+ * @composable_dependencies
+ * - `useCurrentPage` : Hooks structural route indices automatically into underlying network reactive loops.
+ * - `useDeleteModal`: Tracks modal presentation states and locks single entity parameters awaiting API validation.
+ */
 import { computed, ref } from 'vue'
 import { deleteProjectService, getMyProjectsService } from '~/services/projects/project.Service'
 import { useCustomToastify } from '~/composable/useCustomToasitify'

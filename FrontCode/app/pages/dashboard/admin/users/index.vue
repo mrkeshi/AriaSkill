@@ -220,6 +220,19 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @page AdminUserManagement
+ * @description Master control gateway for supervising user profiles, modulating security credentials, and updating roles.
+ * 
+ * @security_guards
+ * - Self-Mutation Protection: Evaluates `isCurrentUser` using the local auth store state to block accidental self-deletion or self-suspension.
+ * - Credential Override: Implements an isolated administrative password assignment portal bypassing the client's current key checks.
+ * 
+ * @data_orchestration
+ * - Server-Driven List: Utilizes cache-keyed `useAsyncData` linked to stateful pagination indices and string query tokens.
+ * - Loading Isolation: Tracks `statusLoadingId` using singular row keys to prevent multiple simultaneous binary status mutations.
+ * 
+ */
 import type { AdminUserDTO } from '~/models/User/UserDTO'
 import { useCustomToastify } from '~/composable/useCustomToasitify'
 import { changeAdminUserPasswordService, deleteAdminUserService, getAdminUsersService, updateAdminUserStatusService } from '~/services/user/user.Service'

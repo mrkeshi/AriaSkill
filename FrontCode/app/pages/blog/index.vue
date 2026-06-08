@@ -52,7 +52,7 @@
         class="text-lg md:text-xl text-cyan-400 font-semibold tracking-wide
                drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]"
       >
-        در حال پیکربندی و راه‌اندازی...
+
       </h2>
 
       <p class="text-gray-500 text-sm leading-relaxed pt-2 font-light">
@@ -61,7 +61,7 @@
       </p>
     </div>
 
-    <!-- loader -->
+ 
     <div
       class="w-64 h-1.5 rounded-full mt-10 overflow-hidden p-[1px]
              border border-white/5 bg-deep-black"
@@ -75,8 +75,15 @@
     </div>
   </UiCardBlury>
 </template>
-
+<!--
+  Technical Blog - Coming Soon Page
+  ---------------------------------------------------------
+  * Layout: RTL-aligned card with glassmorphism effects.
+  * Motion: Custom infinite CSS progress bar animation.
+  * SEO: Integrated Nuxt meta headers for Persian search queries.
+-->
 <script setup>
+
 import { generateSeoMeta } from '~/utilities/seo'
 
 const seo = generateSeoMeta({
