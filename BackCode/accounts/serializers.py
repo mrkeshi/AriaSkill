@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.conf import settings
-from django.core.exceptions import ValidationError as DjangoValidationError
-from django.core.validators import URLValidator
 from django.db.models import Q
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -13,6 +11,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from activity.services import ActivityService
 from notification.services import NotificationService as NS
+
+from accounts.services.unique_username_for_email import unique_username_from_email
+from accounts.services.normalize_url import normalize_url
 
 User = get_user_model()
 
@@ -45,34 +46,6 @@ def build_auth_response(user):
             'is_superuser': user.is_superuser,
         }
     }
-
-
-def normalize_url(value):
-    value = (value or '').strip()
-    if not value:
-        return ''
-
-    if not value.startswith(('http://', 'https://')):
-        value = f'https://{value}'
-
-    try:
-        URLValidator()(value)
-    except DjangoValidationError:
-        raise serializers.ValidationError('Enter a valid URL.')
-
-    return value
-
-
-def unique_username_from_email(email):
-    base = email.split('@')[0].replace('.', '_') or 'user'
-    username = base
-    counter = 1
-
-    while User.objects.filter(username=username).exists():
-        username = f'{base}_{counter}'
-        counter += 1
-
-    return username
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -311,7 +284,6 @@ class AdminUserPasswordSerializer(serializers.Serializer):
 
 
 class PublicProjectMiniSerializer(serializers.ModelSerializer):
-    """Lightweight project serializer for public profile listing."""
     skills = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     project_type_display = serializers.SerializerMethodField()

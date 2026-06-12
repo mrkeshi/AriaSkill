@@ -1,7 +1,6 @@
 from typing import Any
 
 from django.db.models import QuerySet
-from django.utils import timezone
 
 from activity.models import Activity, ActivityType
 
@@ -21,14 +20,14 @@ class ActivityService:
 
     @staticmethod
     def create(
-        *,
-        user,
-        type: str,
-        title: str,
-        description: str,
-        related_project=None,
-        related_user=None,
-        metadata: dict[str, Any] | None = None,
+            *,
+            user,
+            type: str,
+            title: str,
+            description: str,
+            related_project=None,
+            related_user=None,
+            metadata: dict[str, Any] | None = None,
     ) -> Activity | None:
         if not user or not getattr(user, 'is_authenticated', False):
             return None
@@ -64,8 +63,6 @@ class ActivityService:
     @staticmethod
     def delete(activity: Activity) -> None:
         activity.soft_delete()
-
-    # ── Auth ──────────────────────────────────────────────────────────────────
 
     @staticmethod
     def login_success(user, request=None, method: str = 'password') -> Activity | None:
@@ -117,8 +114,6 @@ class ActivityService:
             related_user=related_user if related_user and related_user != user else None,
             metadata=meta,
         )
-
-    # ── Projects ──────────────────────────────────────────────────────────────
 
     @staticmethod
     def project_published(user, project) -> Activity | None:
@@ -186,11 +181,7 @@ class ActivityService:
 
     @staticmethod
     def project_viewed(project, request=None) -> None:
-        """
-        لاگ بازدید از پروژه را ثبت می‌کند.
-        این متد Activity نمی‌سازد؛ فقط ProjectViewLog ثبت می‌کند.
-        کاربر می‌تواند ناشناس (anonymous) باشد.
-        """
+
         meta = request_metadata(request)
 
         from activity.models import ProjectViewLog
@@ -203,8 +194,6 @@ class ActivityService:
             viewer=viewer,
             ip_address=meta.get('ip_address'),
         )
-
-    # ── Comments ──────────────────────────────────────────────────────────────
 
     @staticmethod
     def comment_created(user, project, comment) -> Activity | None:

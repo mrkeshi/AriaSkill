@@ -2,15 +2,15 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+
 class NotificationType(models.TextChoices):
-    LOGIN_FAILED     = 'login_failed',     'Login Failed'
-    COMMENT_CREATED  = 'comment_created',  'Comment Created'
-    LIKE_RECEIVED    = 'like_received',    'Like Received'
-    BROADCAST        = 'broadcast',        'Broadcast (Admin)'
+    LOGIN_FAILED = 'login_failed', 'Login Failed'
+    COMMENT_CREATED = 'comment_created', 'Comment Created'
+    LIKE_RECEIVED = 'like_received', 'Like Received'
+    BROADCAST = 'broadcast', 'Broadcast (Admin)'
+
 
 class Notification(models.Model):
-    
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -46,8 +46,8 @@ class Notification(models.Model):
         ordering = ['is_read', '-created_at']
         indexes = [
             models.Index(fields=['user', 'is_read', '-created_at'], name='notif_feed_idx'),
-            models.Index(fields=['user', 'type', '-created_at'],    name='notif_type_idx'),
-            models.Index(fields=['user', 'deleted_at'],             name='notif_deleted_idx'),
+            models.Index(fields=['user', 'type', '-created_at'], name='notif_type_idx'),
+            models.Index(fields=['user', 'deleted_at'], name='notif_deleted_idx'),
         ]
 
     def __str__(self):
@@ -57,8 +57,8 @@ class Notification(models.Model):
         self.deleted_at = timezone.now()
         self.save(update_fields=['deleted_at', 'updated_at'])
 
+
 class BroadcastLog(models.Model):
-    
     sent_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -66,8 +66,8 @@ class BroadcastLog(models.Model):
         related_name='broadcast_logs',
         help_text='Admin who sent the broadcast.',
     )
-    title       = models.CharField(max_length=180)
-    message     = models.TextField()
+    title = models.CharField(max_length=180)
+    message = models.TextField()
     sent_to_count = models.PositiveIntegerField(
         default=0,
         help_text='Number of users who received this broadcast.',
