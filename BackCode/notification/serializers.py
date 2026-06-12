@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from notification.models import BroadcastLog, Notification, NotificationType
 
+
 class NotificationSerializer(serializers.ModelSerializer):
     related_project_title = serializers.CharField(
         source='related_project.title', read_only=True

@@ -6,4 +6,4 @@ class ActivityConfig(AppConfig):
     name = 'activity'
 
     def ready(self):
-        import activity.listeners  # noqa: F401
+        import activity.listeners  

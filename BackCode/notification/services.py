@@ -9,18 +9,19 @@ from notification.models import BroadcastLog, Notification, NotificationType
 
 User = get_user_model()
 
+
 class NotificationService:
 
     @staticmethod
     def create(
-        *,
-        user,
-        type: str,
-        title: str,
-        message: str,
-        related_project=None,
-        related_user=None,
-        metadata: dict[str, Any] | None = None,
+            *,
+            user,
+            type: str,
+            title: str,
+            message: str,
+            related_project=None,
+            related_user=None,
+            metadata: dict[str, Any] | None = None,
     ) -> Notification | None:
         if not user:
             return None
@@ -91,10 +92,10 @@ class NotificationService:
 
     @staticmethod
     def comment_received(project_owner, project, commenter) -> Notification | None:
-        
+
         commenter_name = (
-            f'{commenter.first_name} {commenter.last_name}'.strip()
-            or commenter.username
+                f'{commenter.first_name} {commenter.last_name}'.strip()
+                or commenter.username
         )
         return NotificationService.create(
             user=project_owner,
@@ -108,10 +109,10 @@ class NotificationService:
 
     @staticmethod
     def like_received(project_owner, project, liker) -> Notification | None:
-        
+
         liker_name = (
-            f'{liker.first_name} {liker.last_name}'.strip()
-            or liker.username
+                f'{liker.first_name} {liker.last_name}'.strip()
+                or liker.username
         )
         return NotificationService.create(
             user=project_owner,
@@ -125,7 +126,7 @@ class NotificationService:
 
     @staticmethod
     def broadcast(admin_user, message: str, title: str = 'پیام همگانی') -> int:
-        
+
         users = User.objects.filter(is_active=True)
         notifications = [
             Notification(
@@ -149,11 +150,11 @@ class NotificationService:
 
         return count
 
+
 class BroadcastLogService:
 
     @staticmethod
     def list_logs(page: int = 1, page_size: int = 8):
-        
         return (
             BroadcastLog.objects
             .select_related('sent_by')
@@ -162,6 +163,5 @@ class BroadcastLogService:
 
     @staticmethod
     def clear_all() -> int:
-        
         count, _ = BroadcastLog.objects.all().delete()
         return count

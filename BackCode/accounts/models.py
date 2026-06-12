@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
-    avatar = models.ImageField(upload_to="profile/avatars/")
+    avatar = models.ImageField(_('avatar'), upload_to="profile/avatars/")
     job_title = models.CharField(_('job_title'), max_length=150, blank=True, null=True)
     about_me = models.TextField(_('about_me'), blank=True, null=True)
     instagram_link = models.URLField(_('instagram_link'), blank=True, null=True)
