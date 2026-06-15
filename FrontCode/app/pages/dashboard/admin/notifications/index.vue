@@ -99,11 +99,11 @@
         
         <div class="grid grid-cols-2 gap-3">
           <div class="bg-white/[0.03] border border-white/10 rounded-xl p-4 text-center">
-            <p class="text-2xl font-black text-white font-mono">{{ toPersianNumerals(totalBroadcasts) }}</p>
+            <p class="text-2xl font-black text-white">{{ toPersianNumerals(totalBroadcasts) }}</p>
             <p class="text-[11px] text-gray-500 mt-1">پیام همگانی ارسال‌شده</p>
           </div>
           <div class="bg-white/[0.03] border border-white/10 rounded-xl p-4 text-center">
-            <p class="text-2xl font-black text-purple-400 font-mono">{{ toPersianNumerals(totalUnread) }}</p>
+            <p class="text-2xl font-black text-purple-400">{{ toPersianNumerals(totalUnread) }}</p>
             <p class="text-[11px] text-gray-500 mt-1">اعلان خوانده‌نشده (شما)</p>
           </div>
         </div>

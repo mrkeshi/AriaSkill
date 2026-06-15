@@ -22,7 +22,7 @@
     </svg>
 
     <span class="font-black -mb-1">
-      <span>{{ project.likes_count }}</span> لایک
+      <span>{{ toPersianNumerals(project.likes_count) }}</span> لایک
     </span>
 
   </button>
@@ -42,6 +42,7 @@
 <!-- likne Component -->
 <script lang="ts" setup>
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
+import { toPersianNumerals } from '~/utilities/dateHelpers';
 
 defineProps<{
   project: ProjectDTO

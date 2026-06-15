@@ -11,16 +11,15 @@
           </div>
           <span class="flex items-center gap-2">
             <Icon name="mdi:comment-outline" class="text-light-gold text-lg"/>
-            {{ project.comments_count }} نظر
+            {{ toPersianNumerals(project.comments_count) }} نظر
           </span>
         </div>
     </UiCardBlury>
 </template>
 <!-- detail project component -->
 <script lang="ts" setup>
-
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
-import { toJalaliLong } from '~/utilities/dateHelpers'
+import { toJalaliLong, toPersianNumerals } from '~/utilities/dateHelpers'
 
 defineProps<{ project: ProjectDTO }>()
 </script>

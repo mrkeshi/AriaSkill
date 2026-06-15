@@ -3,17 +3,17 @@
         <div class="flex justify-between mb-4">
 
           <div class="text-center">
-            <span class="text-light-gold text-xl font-semibold ">{{ project.download_count }}</span>
+            <span class="text-light-gold text-xl font-semibold ">{{ toPersianNumerals(project.download_count) }}</span>
             <p class="text-gray-400 text-sm">دانلود</p>
           </div>
           <div class="text-center">
 
-            <span class="text-light-gold text-xl font-semibold">{{ project.view_count }}</span>
+            <span class="text-light-gold text-xl font-semibold">{{ toPersianNumerals(project.view_count) }}</span>
             <p class="text-gray-400 text-sm">بازدید</p>
           </div>
           <div class="text-center">
 
-            <span class="text-light-gold text-xl font-semibold">{{ project.likes_count }}</span>
+            <span class="text-light-gold text-xl font-semibold">{{ toPersianNumerals(project.likes_count) }}</span>
             <p class="text-gray-400 text-sm">پسند</p>
           </div>
  
@@ -32,8 +32,8 @@
 </template>
 <!-- Download Box  Component -->
 <script lang="ts" setup>
-
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
+import { toPersianNumerals } from '~/utilities/dateHelpers';
 
 defineProps<{
   project: ProjectDTO

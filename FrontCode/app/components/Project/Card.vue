@@ -37,11 +37,11 @@
           <div class="flex items-center gap-4 text-gray-300">
             <span class="flex items-center gap-1 text-sm">
               <Icon name="mdi:heart" class="text-error text-[18px]" />
-              {{ project.likes_count }} پسند
+              {{ toPersianNumerals(project.likes_count )}} پسند
             </span>
             <span class="flex items-center gap-1 text-sm">
               <Icon name="mdi:download" class="text-indigo-600 text-[18px]" />
-              {{ project.download_count }} دانلود
+              {{ toPersianNumerals(project.download_count) }} دانلود
             </span>
           </div>
 
@@ -62,8 +62,9 @@
  * - Handles adaptive state transformations via structural responsive minimization flags.
  * - Caps relational taxonomy chip collections maximizing strict performance grid boundaries.
  */
+
 import type { ProjectDTO } from '~/models/Project/ProjectDTO'
-import { toJalaliLong } from '~/utilities/dateHelpers'
+import { toJalaliLong, toPersianNumerals } from '~/utilities/dateHelpers'
 import { resolveMediaUrl } from '~/utilities/urlHelpers'
 
 const props=defineProps<{
