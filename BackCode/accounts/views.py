@@ -258,11 +258,6 @@ class AdminUserPasswordView(generics.GenericAPIView):
 
 
 class PublicUserProfileView(generics.RetrieveAPIView):
-    """
-    GET /api/account/users/<username>/
-    Public profile — no authentication required.
-    Returns user info + their approved projects with total likes.
-    """
     permission_classes = (AllowAny,)
     serializer_class = PublicUserProfileSerializer
     lookup_field = 'username'

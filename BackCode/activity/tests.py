@@ -53,9 +53,7 @@ def make_activity(user, activity_type=ActivityType.LOGIN_SUCCESS, is_seen=False,
     return a
 
 
-# ─────────────────────────────────────────────
-# Service-level tests
-# ─────────────────────────────────────────────
+
 
 class ActivityServiceTest(APITestCase):
 
@@ -97,7 +95,6 @@ class ActivityServiceTest(APITestCase):
         commenter = make_user('commenter')
         project = make_project(owner)
 
-        # Simulate a minimal comment object
         class FakeComment:
             id = 99
 
@@ -134,13 +131,8 @@ class ActivityServiceTest(APITestCase):
         ActivityService.delete(a)
         a.refresh_from_db()
         self.assertIsNotNone(a.deleted_at)
-        # Still exists in DB but excluded from feed
         self.assertEqual(ActivityService.feed_for(self.user).count(), 0)
 
-
-# ─────────────────────────────────────────────
-# API endpoint tests
-# ─────────────────────────────────────────────
 
 class ActivityRecentEndpointTest(APITestCase):
 
@@ -186,7 +178,6 @@ class ActivityListEndpointTest(APITestCase):
         response = self.client.get('/api/activities/', **auth_header(self.user))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.data['data']
-        # DRF pagination wraps in count/results
         self.assertIn('results', data)
         self.assertIn('count', data)
 
@@ -226,7 +217,6 @@ class ActivityListEndpointTest(APITestCase):
         make_activity(self.user, is_seen=False)
         response = self.client.get('/api/activities/', **auth_header(self.user))
         results = response.data['data']['results']
-        # First items should have is_seen=False
         self.assertFalse(results[0]['is_seen'])
         self.assertFalse(results[1]['is_seen'])
         self.assertTrue(results[2]['is_seen'])

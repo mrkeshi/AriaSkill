@@ -4,13 +4,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from activity.models import Activity
+from activity.schemas import activity_recent_schema, activity_list_schema, activity_mark_seen_schema, \
+    activity_delete_schema, activity_unseen_count_schema, activity_mark_all_seen_schema
 from activity.serializers import ActivitySerializer, ActivityMarkSeenSerializer, ActivityFilterSerializer
 from activity.services import ActivityService
 from core.pagination import ActivityPagination
 
-
+@activity_recent_schema
 class ActivityRecentView(APIView):
-    """GET /api/activities/recent/ — latest 6 activities, unseen first."""
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
@@ -18,9 +19,8 @@ class ActivityRecentView(APIView):
         serializer = ActivitySerializer(activities, many=True)
         return Response(serializer.data)
 
-
+@activity_list_schema
 class ActivityListView(generics.ListAPIView):
-    """GET /api/activities/ — full paginated feed with optional filters."""
     permission_classes = (IsAuthenticated,)
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
@@ -41,8 +41,8 @@ class ActivityListView(generics.ListAPIView):
         return qs
 
 
+@activity_mark_seen_schema
 class ActivityMarkSeenView(APIView):
-    """PATCH /api/activities/<id>/mark-seen/"""
     permission_classes = (IsAuthenticated,)
 
     def patch(self, request, pk):
@@ -60,9 +60,8 @@ class ActivityMarkSeenView(APIView):
     def _get_owned(pk, user):
         return Activity.objects.filter(pk=pk, user=user, deleted_at__isnull=True).first()
 
-
+@activity_delete_schema
 class ActivityDeleteView(APIView):
-    """DELETE /api/activities/<id>/"""
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, pk):
@@ -73,8 +72,8 @@ class ActivityDeleteView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@activity_unseen_count_schema
 class ActivityUnseenCountView(APIView):
-    """GET /api/activities/unseen-count/"""
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
@@ -82,8 +81,8 @@ class ActivityUnseenCountView(APIView):
         return Response({'unseen_count': count})
 
 
+@activity_mark_all_seen_schema
 class ActivityMarkAllSeenView(APIView):
-    """PATCH /api/activities/mark-all-seen/"""
     permission_classes = (IsAuthenticated,)
 
     def patch(self, request):
