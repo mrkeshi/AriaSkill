@@ -10,7 +10,7 @@ from django.utils.html import strip_tags
 def send_activation_register_email(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
-    activation_link = f"{settings.FRONTEND_URL}/activate/{uid}/{token}/"
+    activation_link = f"{settings.FRONTEND_URL}/active/{uid}/{token}/"
 
     user_display = user.get_full_name() or user.username
 
@@ -39,7 +39,7 @@ def send_activation_register_email(user):
 def send_activation_change_pass_email(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
-    reset_link = f"{settings.FRONTEND_URL}/reset-password?uid={uid}&token={token}"
+    reset_link = f"{settings.FRONTEND_URL}/user/resetpassword/{uid}/{token}"
 
     user_display = user.get_full_name() or user.username
 
