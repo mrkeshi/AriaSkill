@@ -345,6 +345,7 @@ class PublicUserProfileSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj):
         if obj.avatar and hasattr(obj.avatar, 'url'):
+            print("url:"+ obj.avatar.url)
             return obj.avatar.url
         return None
 

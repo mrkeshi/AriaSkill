@@ -21,12 +21,16 @@ from notification.services import BroadcastLogService, NotificationService
 
 @notification_list_schema
 class NotificationListView(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
+
     serializer_class = NotificationSerializer
 
     def get_queryset(self):
+        if not self.request.user or not self.request.user.is_authenticated:
+            return Notification.objects.none()
+
         filter_ser = NotificationFilterSerializer(
-            data=self.request.query_params)
+            data=self.request.query_params
+        )
         filter_ser.is_valid(raise_exception=True)
         filters = filter_ser.validated_data
 
@@ -34,6 +38,7 @@ class NotificationListView(generics.ListAPIView):
 
         if 'type' in filters:
             qs = qs.filter(type=filters['type'])
+
         if 'is_read' in filters:
             qs = qs.filter(is_read=filters['is_read'])
 
@@ -41,21 +46,25 @@ class NotificationListView(generics.ListAPIView):
 
 
 class NotificationRecentView(APIView):
-    permission_classes = (IsAuthenticated,)
 
     @notification_recent_schema
     def get(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response([])
+
         items = NotificationService.recent_for(request.user)
         return Response(NotificationSerializer(items, many=True).data)
 
 
 class NotificationUnreadCountView(APIView):
-    permission_classes = (IsAuthenticated,)
 
     @notification_unread_count_schema
     def get(self, request):
-        return Response({'unread_count': NotificationService.unread_count(request.user)})
+        if not request.user.is_authenticated:
+            return Response({'unread_count': 0})
 
+        count = NotificationService.unread_count(request.user)
+        return Response({'unread_count': count})
 
 class NotificationMarkReadView(APIView):
     permission_classes = (IsAuthenticated,)

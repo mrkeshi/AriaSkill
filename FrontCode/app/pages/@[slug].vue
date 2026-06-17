@@ -36,13 +36,15 @@
         <div class="absolute -bottom-32 -left-32 w-[30rem] h-[30rem] bg-classic-gold/15 rounded-full blur-[100px] pointer-events-none animate-blob animation-delay-2000"></div>
 
         <div class="relative w-full h-48 sm:h-64 ">
-          <!-- یوزرنیم بک‌گراند بزرگ -->
           <div dir="ltr" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/[0.02] text-7xl sm:text-9xl font-black select-none tracking-tighter pointer-events-none font-pelak uppercase w-full text-center transform group-hover:scale-105 transition-transform duration-700">
             @{{ profile.username }}
+            
           </div>
         </div>
 
         <div class="px-6 sm:px-10 pb-8">
+                     
+
           <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
             
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 -mt-20 sm:-mt-24">
