@@ -1,27 +1,33 @@
 """
 Django settings for Aria project.
 """
+
 from datetime import timedelta
 import os
 from pathlib import Path
 
-
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
+from dotenv import load_dotenv
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-lcit#6($l$@ej3=%jhrd75!ne6io&g=hw5lpatk_q66@^p-ijy'
+# =========================
+# Core Security
+# =========================
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-DEBUG = True
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
-ALLOWED_HOSTS = []
+# =========================
+# Google OAuth
+# =========================
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
 
+# =========================
+# Applications
+# =========================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,17 +35,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+
     'accounts',
     'projects',
     'activity',
     'notification',
 ]
 
+# =========================
+# Middleware
+# =========================
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +64,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+# =========================
+# Templates
+# =========================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -70,6 +84,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# =========================
+# Database
+# =========================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -77,6 +94,9 @@ DATABASES = {
     }
 }
 
+# =========================
+# Password validation
+# =========================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -84,31 +104,52 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# =========================
+# Localization
+# =========================
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Tehran'
+TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Tehran')
 USE_I18N = True
 USE_TZ = True
 
+# =========================
+# Static / Media
+# =========================
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-FRONTEND_URL = "http://localhost:3000"
+# =========================
+# Frontend
+# =========================
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# =========================
+# Custom User
+# =========================
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
+# =========================
+# DRF
+# =========================
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ['rest_framework_simplejwt.authentication.JWTAuthentication'],
-    "DEFAULT_RENDERER_CLASSES": ["core.renderers.CustomJSONRenderer"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "core.renderers.CustomJSONRenderer"
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 8,
     "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler",
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+# =========================
+# JWT
+# =========================
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
@@ -121,6 +162,9 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
+# =========================
+# API Docs
+# =========================
 SPECTACULAR_SETTINGS = {
     'TITLE': "Aria Skill Api",
     'DESCRIPTION': "Aria Skill Api",
@@ -133,15 +177,26 @@ SPECTACULAR_SETTINGS = {
     'CAMELIZE_NAMES': True,
 }
 
+# =========================
+# CORS
+# =========================
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 
-
+# =========================
+# Email (SMTP Gmail)
+# =========================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'amirhosseinpishroa2001@gmail.com'
-EMAIL_HOST_PASSWORD = 'hxal zhzp wpqy zjiq'
+
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+# =========================
+# Default Auto Field
+# =========================
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

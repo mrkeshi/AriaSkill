@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 
+User = get_user_model()
 def unique_username_from_email(email):
     base = email.split('@')[0].replace('.', '_') or 'user'
     username = base

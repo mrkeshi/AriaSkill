@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-full">
+  <div id="google-button" class="w-full max-w-full">
     <button
       v-if="isReady"
       type="button"
@@ -141,3 +141,9 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style>
+body {
+  overflow-x: clip;
+}
+</style>
