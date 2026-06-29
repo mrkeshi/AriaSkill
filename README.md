@@ -1,6 +1,6 @@
 # AriaSkill
 
-A full-stack project showcase platform where developers can publish, share, and discover software projects. Built with a Django REST API backend and a Nuxt 3 frontend.
+A full-stack project showcase platform where developers can publish, share, and discover software projects. Built with a Django REST API backend and a Nuxt 4 frontend.
 
 ---
 
@@ -18,7 +18,6 @@ A full-stack project showcase platform where developers can publish, share, and 
   - [Directory Overview](#directory-overview)
   - [Key Features](#key-features-1)
   - [Setup & Run](#setup--run-1)
-- [Async Email with Celery & Redis](#async-email-with-celery--redis)
 - [Running Both Together](#running-both-together)
 
 ---
@@ -31,7 +30,6 @@ A full-stack project showcase platform where developers can publish, share, and 
 | Frontend   | Nuxt 4 · Vue 3 · TypeScript · Pinia · ApexCharts · Tailwind CSS                        |
 | Auth       | JWT (access + refresh tokens) · Google OAuth                                            |
 | Database   | SQLite (development) — swappable to PostgreSQL for production                           |
-| Task Queue | Celery · Redis (async email delivery, background jobs)                                  |
 | Media      | Django media serving (`/media/`) for avatars, project images & files                    |
 
 ---
@@ -73,7 +71,6 @@ AriaSkill/
 │   ├── config/             # Django project config
 │   │   ├── settings.py
 │   │   ├── urls.py         # Root URL configuration
-│   │   ├── celery.py       # Celery app configuration
 │   │   ├── wsgi.py
 │   │   └── asgi.py
 │   └── manage.py
@@ -122,7 +119,7 @@ AriaSkill/
 | `activity`     | Event-driven activity log via Django Signals; soft-delete support; `ProjectDownloadLog` for persistent download stats  |
 | `notification` | In-app notifications linked to user actions                                                                           |
 | `core`         | Custom JSON renderer, pagination, global exception handler, OpenAPI schema helpers                                    |
-| `config`       | Django settings, root URLs, Celery app definition, WSGI/ASGI entry points                                             |
+| `config`       | Django settings, root URLs, WSGI/ASGI entry points                                                                    |
 
 ### Key Features
 
@@ -133,7 +130,6 @@ AriaSkill/
 - **Event-driven activity system** — Django `Signal`s defined in `activity/events.py`; receivers in `activity/listeners.py` call `ActivityService` to persist records; all activities support soft-delete ...
 - **Persistent download log** — `ProjectDownloadLog` stores every download independently of the activity feed, so deleting an activity record never affects the download count shown in the dashboard chart ...
 - **Dashboard chart** — `GET /api/project/dashboard/chart/` returns up to 20 days of daily download and view data; downloads are read from `ProjectDownloadLog`, not `Activity` ...
-- **Async email delivery** — account activation and password-reset emails are dispatched as Celery tasks through a Redis broker, keeping API responses fast ...
 - **Admin panel** — Django admin for managing users, projects, comments, and skills with custom admin views ...
 - **OpenAPI docs** — auto-generated Swagger UI at `/api/swagger/` and ReDoc at `/api/redoc/` ...
 
@@ -142,7 +138,6 @@ AriaSkill/
 #### Prerequisites
 
 - Python 3.11+
-- Redis (running locally or via Docker)
 
 #### Steps
 
@@ -155,9 +150,7 @@ python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 
 # 3. Install dependencies
-pip install django djangorestframework djangorestframework-simplejwt \
-    django-cors-headers drf-spectacular drf-spectacular-sidecar \
-    Pillow python-dotenv celery redis django-celery-results
+pip install -r requirements.txt
 
 # 4. Create a .env file (see Environment Variables section)
 
@@ -169,9 +162,6 @@ python manage.py createsuperuser
 
 # 7. Start the Django development server
 python manage.py runserver
-
-# 8. In a separate terminal — start the Celery worker
-celery -A config worker --loglevel=info
 ```
 
 The API will be available at `http://127.0.0.1:8000/`.
@@ -181,23 +171,14 @@ The API will be available at `http://127.0.0.1:8000/`.
 Create a `.env` file inside `BackCode/`:
 
 ```env
-# Django
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=your-very-strong-secret-key
 DEBUG=True
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id-here
-
-# Email (SMTP)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+GOOGLE_CLIENT_ID=your-google-client-id
 EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
-
-# Celery / Redis
-CELERY_BROKER_URL=redis://127.0.0.1:6379/0
-CELERY_RESULT_BACKEND=redis://127.0.0.1:6379/0
+# Frontend
+FRONTEND_URL=http://localhost:3000
 ```
 
 ### API Documentation
@@ -304,9 +285,7 @@ npm install
 # or
 pnpm install
 
-# 3. Configure the API base URL
-#    Edit app/utilities/ApiConfig.ts if your backend runs on a different port:
-#    export const baseURL = "http://127.0.0.1:8000/api/"
+# 3. Create a .env file (see Environment Variables below)
 
 # 4. Start the development server
 npm run dev
@@ -316,151 +295,78 @@ pnpm dev
 
 The frontend will be available at `http://localhost:3000`.
 
-Add a runtime config to `nuxt.config.ts` if not already present:
+### Environment Variables
 
-```ts
-export default defineNuxtConfig({
-  runtimeConfig: {
-    public: {
-      baseUrl: process.env.NUXT_PUBLIC_BASE_URL || 'http://127.0.0.1:8000/api/',
-    },
-  },
-})
-```
-
-And a `.env` at the root of `FrontCode/`:
+Create a `.env` file at the root of `FrontCode/`:
 
 ```env
-NUXT_PUBLIC_BASE_URL=http://127.0.0.1:8000/api/
+NUXT_PUBLIC_BASE_URL="http://127.0.0.1:8000/api/"
+NUXT_PUBLIC_NODE_ENV=dev
+NUXT_PUBLIC_HOST="http://localhost:3000/"
+NUXT_PUBLIC_API_ADDRESS=""
+NUXT_PUBLIC_GOOGLE_CLIENT_ID=1071435067795-ihtdo28q33m9614s4kkequ7mdvhc8in1.apps.googleusercontent.com
+NUXT_PRIVATE_HEADER_KEY=django-insecure-lcit#6($l$@ej3=%jhrd75!ne6io&g=hw5lpatk_q66@^p-ijy
+NUXT_TEST=""
 ```
 
----
+### `nuxt.config.ts`
 
-## Async Email with Celery & Redis
+```ts
+import tailwindcss from "@tailwindcss/vite";
+import Icons from 'unplugin-icons/vite'
 
-Account activation and password-reset emails are sent asynchronously so the API never blocks waiting for an SMTP response.
-
-### How it works
-
+export default defineNuxtConfig({
+  compatibilityDate: "2025-07-15",
+  devtools: { enabled: true },
+  css: ["@/assets/css/main.css"],
+  runtimeConfig: {
+    privateHeaderKey: process.env.NUXT_PRIVATE_HEADER_KEY || '',
+    public: {
+      baseUrl: process.env.NUXT_PUBLIC_BASE_URL || 'http://127.0.0.1:8000/api/',
+      nodeEnv: process.env.NUXT_PUBLIC_NODE_ENV || 'dev',
+      host: process.env.NUXT_PUBLIC_HOST || 'http://localhost:3000/',
+      apiAddress: process.env.NUXT_PUBLIC_API_ADDRESS || '',
+      googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+    },
+  },
+  modules: [
+    '@nuxt/icon',
+    'nuxt-toastify',
+    "@pinia/nuxt",
+  ],
+  // Fix: "Failed to stringify dev server logs — Cannot stringify a function"
+  // Pinia setup stores return functions alongside state; devalue (Nuxt's
+  // serialiser) cannot serialise functions and emits this warning during HMR.
+  // renderJsonPayloads serialises only plain-data payloads and skips
+  // functions, eliminating the warning without requiring store refactoring.
+  experimental: {
+    renderJsonPayloads: true,
+  },
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
 ```
-User registers / resets password
-        │
-        ▼
-Django view calls  send_activation_email.delay(user_id)
-        │                   (Celery task)
-        ▼
-Task is pushed to ──► Redis (message broker)
-        │
-        ▼
-Celery worker picks up the task
-        │
-        ▼
-Worker renders email template + sends via SMTP
-```
-
-### Setup
-
-**1. Install Redis**
-
-```bash
-# macOS
-brew install redis && brew services start redis
-
-# Ubuntu / Debian
-sudo apt install redis-server && sudo systemctl start redis
-
-# Docker (quickest)
-docker run -d -p 6379:6379 redis:7-alpine
-```
-
-**2. Add Celery config to `config/settings.py`**
-
-```python
-CELERY_BROKER_URL      = os.environ.get('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
-CELERY_RESULT_BACKEND  = os.environ.get('CELERY_RESULT_BACKEND', 'redis://127.0.0.1:6379/0')
-CELERY_ACCEPT_CONTENT  = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-```
-
-**3. Create `config/celery.py`**
-
-```python
-import os
-from celery import Celery
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-
-app = Celery('config')
-app.config_from_object('django.conf:settings', namespace='CELERY')
-app.autodiscover_tasks()
-```
-
-**4. Register Celery in `config/__init__.py`**
-
-```python
-from .celery import app as celery_app
-__all__ = ('celery_app',)
-```
-
-**5. Define an email task (example in `accounts/tasks.py`)**
-
-```python
-from celery import shared_task
-from django.core.mail import send_mail
-
-@shared_task
-def send_activation_email(user_id: int):
-    from accounts.models import CustomUser
-    user = CustomUser.objects.get(pk=user_id)
-    send_mail(
-        subject='Activate your AriaSkill account',
-        message=f'Hi {user.username}, click the link to activate your account.',
-        from_email='noreply@ariaskill.com',
-        recipient_list=[user.email],
-    )
-```
-
-**6. Start the Celery worker**
-
-```bash
-# from inside BackCode/ with the venv active
-celery -A config worker --loglevel=info
-```
-
-> **Tip:** In production, run the worker as a system service (systemd / Supervisor) and point `CELERY_BROKER_URL` to your production Redis instance.
 
 ---
 
 ## Running Both Together
 
-Open **four** terminals for the full stack:
+Open **two** terminals for the full stack:
 
-**Terminal 1 — Redis**
-```bash
-redis-server
-# or: docker run -d -p 6379:6379 redis:7-alpine
-```
-
-**Terminal 2 — Django**
+**Terminal 1 — Django**
 ```bash
 cd BackCode
 source venv/bin/activate
 python manage.py runserver
 ```
 
-**Terminal 3 — Celery Worker**
-```bash
-cd BackCode
-source venv/bin/activate
-celery -A config worker --loglevel=info
-```
-
-**Terminal 4 — t Frontend**
+**Terminal 2 — Frontend**
 ```bash
 cd FrontCode
 npm run dev
 ```
 
-Then open `http://localhost:3000` in your browser. The frontend calls the API at `http://127.0.0.1:8000/api/`, and any email tasks are processed in the background by the Celery worker through Redis.
+Then open `http://localhost:3000` in your browser. The frontend calls the API at `http://127.0.0.1:8000/api/`.
 
 CORS is already configured in Django to allow `http://localhost:3000` and `http://127.0.0.1:3000`.
